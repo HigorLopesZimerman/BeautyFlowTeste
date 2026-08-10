@@ -1,0 +1,19 @@
+# Ambiente virtual Python
+backend/venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Banco de dados local
+*.db
+
+# Node / React
+node_modules/
+dist/
+
+# Variáveis de ambiente
+.env
+
+# VS Code
+.vscode/
