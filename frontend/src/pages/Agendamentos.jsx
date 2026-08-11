@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useAgendamentos } from "../hooks/useAgendamentos";
 import Layout from "../components/Layout";
-import api from "../services/api";
 import SearchBar from "../components/SearchBar";
 import ActionButton from "../components/ActionButton";
 import EditButton from "../components/EditButton";
@@ -10,246 +9,22 @@ import Select from "../components/Select";
 import Table from "../components/Table";
 
 export default function Agendamentos() {
-
-
-    const [agendamentos, setAgendamentos] = useState([]);
-
-    const [clientes, setClientes] = useState([]);
-    const [funcionarios, setFuncionarios] = useState([]);
-    const [servicos, setServicos] = useState([]);
-
-    const [clienteId, setClienteId] = useState("");
-    const [funcionarioId, setFuncionarioId] = useState("");
-    const [servicoId, setServicoId] = useState("");
-
-    const [data, setData] = useState("");
-    const [hora, setHora] = useState("");
-
-    const [status, setStatus] = useState("");
-
-    const [agendamentoEditando, setAgendamentoEditando] = useState(null);
-
-    const [filtroStatus, setFiltroStatus] = useState("Todos");
-
-    const [pesquisa, setPesquisa] = useState("");
-
-
-
-    useEffect(() => {
-        carregarAgendamentos();
-        carregarClientes();
-        carregarFuncionarios();
-        carregarServicos();
-    }, []);
-
-
-    async function carregarClientes() {
-
-
-        try {
-        const resposta = await api.get("/clientes");
-
-        setClientes(resposta.data);
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
-    async function carregarFuncionarios() {
-
-
-        try {
-        const resposta = await api.get("/funcionarios");
-
-        setFuncionarios(resposta.data);
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
-    async function carregarServicos() {
-
-
-        try {
-        const resposta = await api.get("/servicos");
-
-        setServicos(resposta.data);
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-        
-    }
-
-    async function carregarAgendamentos() {
-
-
-        try {
-        const resposta = await api.get("/agendamentos");
-
-        console.log(resposta.data);
-
-        setAgendamentos(resposta.data);
-        console.log(resposta.data.map(a => a.status));
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
-
-
-
-    async function cadastrarAgendamento() {
-        
-        if (!clienteId || !funcionarioId || !servicoId || !data || !hora) {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        if (agendamentoEditando) {
-
-            try {
-
-                await api.put(`/agendamentos/${agendamentoEditando}`, {
-                    cliente_id: clienteId,
-                    funcionario_id: funcionarioId,
-                    servico_id: servicoId,
-                    data,
-                    hora,
-                    status
-
-                });
-
-                setAgendamentoEditando(null);
-                setClienteId("");
-                setFuncionarioId("");
-                setServicoId("");
-                setData("");
-                setHora("");
-                
-                carregarAgendamentos();
-
-                return;
-
-            } catch (erro) {
-                console.error(erro);
-                return;
-            }
-
-    }
-
-    try {
-
-        await api.post("/agendamentos", {
-            cliente_id: clienteId,
-            funcionario_id: funcionarioId,
-            servico_id: servicoId,
-            data,
-            hora
-        });
-
-        setClienteId("");
-        setFuncionarioId("");
-        setServicoId("");
-        setData("");
-        setHora("");
-
-        carregarAgendamentos();
-
-    } catch (erro) {
-        console.error(erro);
-    }
-
-    }
-
-
-    async function excluirAgendamento(id) {
-
-        const confirmar = window.confirm(
-            "Deseja realmente excluir este agendamento?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
-        try {
-
-            await api.delete(`/agendamentos/${id}`);
-
-            carregarAgendamentos();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-
-    }
-
-    async function alterarStatus(id, novoStatus) {
-
-        try {
-
-            await api.put(`/agendamentos/${id}/status`, {
-                status: novoStatus
-            });
-
-            carregarAgendamentos();
-
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
-
-    function editarAgendamento(agendamento) {
-
-        setAgendamentoEditando(agendamento.id);
-
-        setClienteId(agendamento.cliente_id);
-        setFuncionarioId(agendamento.funcionario_id);
-        setServicoId(agendamento.servico_id);
-
-        setData(agendamento.data);
-        setHora(agendamento.hora);
-
-        setStatus(agendamento.status);
-
-    }
-
-   const agendamentosFiltrados = agendamentos.filter((agendamento) => {
-
-        const texto = pesquisa.toLowerCase();
-
-        const correspondePesquisa =
-
-            agendamento.cliente.toLowerCase().includes(texto) ||
-
-            agendamento.funcionario.toLowerCase().includes(texto) ||
-
-            agendamento.servico.toLowerCase().includes(texto);
-
-        const correspondeStatus =
-
-            filtroStatus === "Todos" ||
-
-            agendamento.status === filtroStatus;
-
-        return correspondePesquisa && correspondeStatus;
-
-    });
+    const {
+        clientes, funcionarios, servicos,
+        clienteId, setClienteId,
+        funcionarioId, setFuncionarioId,
+        servicoId, setServicoId,
+        data, setData,
+        hora, setHora,
+        agendamentoEditando,
+        setFiltroStatus,
+        pesquisa, setPesquisa,
+        agendamentosFiltrados,
+        cadastrarAgendamento,
+        excluirAgendamento,
+        alterarStatus,
+        editarAgendamento
+    } = useAgendamentos();
 
 
     return (
@@ -395,7 +170,7 @@ export default function Agendamentos() {
 
                     <thead>
                         <tr>
-                            <th>ID</th>
+
                             <th>Cliente</th>
                             <th>Funcionário</th>
                             <th>Serviço</th>
@@ -412,7 +187,7 @@ export default function Agendamentos() {
 
                             <tr key={agendamento.id}>
 
-                                <td>{agendamento.id}</td>
+
                                 <td>{agendamento.cliente}</td>
                                 <td>{agendamento.funcionario}</td>
                                 <td>{agendamento.servico}</td>

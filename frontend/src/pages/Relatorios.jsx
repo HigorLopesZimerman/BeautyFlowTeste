@@ -1,66 +1,15 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
+import { useRelatorios } from "../hooks/useRelatorios";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 
 export default function Relatorios() {
-
-    const [dados, setDados] = useState(null);
-    const [inicio, setInicio] = useState("");
-    const [fim, setFim] = useState("");
-    const [faturamentoPeriodo, setFaturamentoPeriodo] = useState(null);
-
-    useEffect(() => {
-        carregarRelatorios();
-    }, []);
-
-    async function carregarRelatorios() {
-
-        try {
-
-            const resposta = await api.get("/relatorios");
-
-            setDados(resposta.data);
-
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
-    async function consultarPeriodo() {
-
-        if (!inicio || !fim) {
-
-            alert("Selecione as duas datas.");
-
-            return;
-
-        }
-
-        try {
-
-            const resposta = await api.get("/relatorios/faturamento", {
-
-                params: {
-                    inicio,
-                    fim
-                }
-
-            });
-
-            setFaturamentoPeriodo(resposta.data.faturamento);
-
-        } catch (erro) {
-
-            console.error(erro);
-
-        }
-
-    }
-
+    const {
+        dados,
+        inicio, setInicio,
+        fim, setFim,
+        faturamentoPeriodo,
+        consultarPeriodo
+    } = useRelatorios();
 
     if (!dados) {
         return <Layout><h2>Carregando...</h2></Layout>;

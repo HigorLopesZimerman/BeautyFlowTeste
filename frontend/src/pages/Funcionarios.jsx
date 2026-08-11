@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useFuncionarios } from "../hooks/useFuncionarios";
 import Layout from "../components/Layout";
-import api from "../services/api";
 import SearchBar from "../components/SearchBar";
 import ActionButton from "../components/ActionButton";
 import EditButton from "../components/EditButton";
@@ -9,122 +8,18 @@ import Input from "../components/Input";
 import Table from "../components/Table";
 
 export default function Funcionarios() {
-
-    const [funcionarios, setFuncionarios] = useState([]);
-    const [pesquisa, setPesquisa] = useState("");
-    const [nome, setNome] = useState("");
-    const [funcao, setFuncao] = useState("");
-    const [telefone, setTelefone] = useState("");
-    const [email, setEmail] = useState("");
-    const [funcionarioEditando, setFuncionarioEditando] = useState(null);
-
-    useEffect(() => {
-        carregarFuncionarios();
-    }, []);
-
-    async function carregarFuncionarios() {
-        try {
-            const resposta = await api.get("/funcionarios");
-            setFuncionarios(resposta.data);
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function cadastrarFuncionario() {
-
-        if (!nome || !funcao || !telefone || !email) {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        if (funcionarioEditando) {
-
-            try {
-
-                await api.put(`/funcionarios/${funcionarioEditando}`, {
-                    nome,
-                    funcao,
-                    telefone,
-                    email
-                });
-
-                setFuncionarioEditando(null);
-                setNome("");
-                setFuncao("");
-                setTelefone("");
-                setEmail("");
-
-                carregarFuncionarios();
-
-                return;
-
-            } catch (erro) {
-                console.error(erro);
-                return;
-            }
-        }
-
-        try {
-
-            await api.post("/funcionarios", {
-                nome,
-                funcao,
-                telefone,
-                email
-            });
-
-            setNome("");
-            setFuncao("");
-            setTelefone("");
-            setEmail("");
-
-            carregarFuncionarios();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function excluirFuncionario(id) {
-
-        const confirmar = window.confirm(
-            "Deseja realmente excluir este funcionário?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
-        try {
-
-            await api.delete(`/funcionarios/${id}`);
-
-            carregarFuncionarios();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    function editarFuncionario(funcionario) {
-
-        setFuncionarioEditando(funcionario.id);
-
-        setNome(funcionario.nome);
-        setFuncao(funcionario.funcao);
-        setTelefone(funcionario.telefone);
-        setEmail(funcionario.email);
-    
-    }
-
-    const funcionariosFiltrados = funcionarios.filter((funcionario) =>
-
-        funcionario.nome
-            .toLowerCase()
-            .includes(pesquisa.toLowerCase())
-
-    );
+    const {
+        nome, setNome,
+        funcao, setFuncao,
+        telefone, setTelefone,
+        email, setEmail,
+        funcionarioEditando,
+        pesquisa, setPesquisa,
+        funcionariosFiltrados,
+        cadastrarFuncionario,
+        excluirFuncionario,
+        editarFuncionario
+    } = useFuncionarios();
 
 
     return (
@@ -204,7 +99,7 @@ export default function Funcionarios() {
 
                 <thead>
                     <tr>
-                        <th>ID</th>
+
                         <th>Nome</th>
                         <th>Função</th>
                         <th>Telefone</th>
@@ -218,7 +113,7 @@ export default function Funcionarios() {
                     {funcionariosFiltrados.map((funcionario) => (
 
                         <tr key={funcionario.id}>
-                            <td>{funcionario.id}</td>
+
                             <td>{funcionario.nome}</td>
                             <td>{funcionario.funcao}</td>
                             <td>{funcionario.telefone}</td>

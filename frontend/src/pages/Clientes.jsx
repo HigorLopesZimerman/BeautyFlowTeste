@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useClientes } from "../hooks/useClientes";
 import Layout from "../components/Layout";
-import api from "../services/api";
 import SearchBar from "../components/SearchBar";
 import ActionButton from "../components/ActionButton";
 import EditButton from "../components/EditButton";
@@ -9,119 +8,17 @@ import Input from "../components/Input";
 import Table from "../components/Table";
 
 export default function Clientes() {
-
-    const [clientes, setClientes] = useState([]);
-    const [nome, setNome] = useState("");
-    const [telefone, setTelefone] = useState("");
-    const [email, setEmail] = useState("");
-    const [clienteEditando, setClienteEditando] = useState(null);
-
-    const [pesquisa, setPesquisa] = useState("");
-
-    useEffect(() => {
-        carregarClientes();
-    }, []);
-
-    async function carregarClientes() {
-        try {
-            const resposta = await api.get("/clientes");
-            setClientes(resposta.data);
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function cadastrarCliente() {
-
-        if (!nome || !telefone || !email) {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        if (clienteEditando) {
-
-            try {
-
-                await api.put(`/clientes/${clienteEditando}`, {
-                    nome,
-                    telefone,
-                    email
-                });
-
-                setClienteEditando(null);
-                setNome("");
-                setTelefone("");
-                setEmail("");
-
-                carregarClientes();
-
-                return;
-
-            } catch (erro) {
-                console.error(erro);
-                return;
-            }
-        }
-
-        try {
-
-            await api.post("/clientes", {
-                nome,
-                telefone,
-                email
-            });
-
-            setNome("");
-            setTelefone("");
-            setEmail("");
-
-            carregarClientes();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function excluirCliente(id) {
-
-        const confirmar = window.confirm(
-            "Deseja realmente excluir este cliente?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
-        try {
-
-            await api.delete(`/clientes/${id}`);
-
-            carregarClientes();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    function editarCliente(cliente) {
-            
-        setClienteEditando(cliente.id);
-
-        setNome(cliente.nome);
-        setTelefone(cliente.telefone);
-        setEmail(cliente.email);
-    
-    }
-
-    const clientesFiltrados = clientes.filter((cliente) =>
-
-        cliente.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
-
-        cliente.telefone.toLowerCase().includes(pesquisa.toLowerCase()) ||
-
-        cliente.email.toLowerCase().includes(pesquisa.toLowerCase())
-
-    );
+    const {
+        nome, setNome,
+        telefone, setTelefone,
+        email, setEmail,
+        clienteEditando,
+        pesquisa, setPesquisa,
+        clientesFiltrados,
+        cadastrarCliente,
+        excluirCliente,
+        editarCliente
+    } = useClientes();
 
 
 
@@ -193,7 +90,7 @@ export default function Clientes() {
 
                 <thead>
                     <tr>
-                        <th>ID</th>
+
                         <th>Nome</th>
                         <th>Telefone</th>
                         <th>Email</th>
@@ -206,7 +103,7 @@ export default function Clientes() {
                     {clientesFiltrados.map((cliente) => (
 
                         <tr key={cliente.id}>
-                            <td>{cliente.id}</td>
+
                             <td>{cliente.nome}</td>
                             <td>{cliente.telefone}</td>
                             <td>{cliente.email}</td>

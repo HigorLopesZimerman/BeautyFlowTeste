@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useServicos } from "../hooks/useServicos";
 import Layout from "../components/Layout";
-import api from "../services/api";
 import SearchBar from "../components/SearchBar";
 import ActionButton from "../components/ActionButton";
 import EditButton from "../components/EditButton";
@@ -9,117 +8,17 @@ import Input from "../components/Input";
 import Table from "../components/Table";
 
 export default function Servicos() {
-
-    const [servicos, setServicos] = useState([]);
-    const [pesquisa, setPesquisa] = useState("");
-    const [nome, setNome] = useState("");
-    const [duracao, setDuracao] = useState("");
-    const [preco, setPreco] = useState("");
-    const [servicoEditando, setServicoEditando] = useState(null);
-
-
-    useEffect(() => {
-        carregarServicos();
-    }, []);
-
-    async function carregarServicos() {
-        try {
-            const resposta = await api.get("/servicos");
-            setServicos(resposta.data);
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function cadastrarServico() {
-
-        if (!nome || !duracao || !preco) {
-            alert("Preencha todos os campos.");
-            return;
-        }
-
-        if (servicoEditando) {
-
-            try {
-
-                await api.put(`/servicos/${servicoEditando}`, {
-                    nome,
-                    duracao,
-                    preco
-                });
-
-                setServicoEditando(null);
-                setNome("");
-                setDuracao("");
-                setPreco("");
-
-                carregarServicos();
-
-                return;
-
-            } catch (erro) {
-                console.error(erro);
-                return;
-            }
-        }
-
-        try {
-
-            await api.post("/servicos", {
-                nome,
-                duracao,
-                preco
-            });
-
-            setNome("");
-            setDuracao("");
-            setPreco("");
-
-            carregarServicos();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    async function excluirServico(id) {
-
-        const confirmar = window.confirm(
-            "Deseja realmente excluir este serviço?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
-        try {
-
-            await api.delete(`/servicos/${id}`);
-
-            carregarServicos();
-
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    function editarServico(servico) {
-
-        setServicoEditando(servico.id);
-
-        setNome(servico.nome);
-        setDuracao(servico.duracao);
-        setPreco(servico.preco);
-
-    }
-
-    const servicosFiltrados = servicos.filter((servico) =>
-
-        servico.nome
-            .toLowerCase()
-            .includes(pesquisa.toLowerCase())
-
-    );
+    const {
+        nome, setNome,
+        duracao, setDuracao,
+        preco, setPreco,
+        servicoEditando,
+        pesquisa, setPesquisa,
+        servicosFiltrados,
+        cadastrarServico,
+        excluirServico,
+        editarServico
+    } = useServicos();
 
 
     return (
@@ -192,7 +91,7 @@ export default function Servicos() {
 
                 <thead>
                     <tr>
-                        <th>ID</th>
+
                         <th>Nome</th>
                         <th>Duração(min)</th>
                         <th>Preço</th>
@@ -205,7 +104,7 @@ export default function Servicos() {
                     {servicosFiltrados.map((servico) => (
 
                         <tr key={servico.id}>
-                            <td>{servico.id}</td>
+
                             <td>{servico.nome}</td>
                             <td>
                                 {servico.duracao} min

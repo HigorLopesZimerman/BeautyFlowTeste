@@ -1,37 +1,17 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
-
+import { useDashboard } from "../hooks/useDashboard";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 
 export default function Dashboard() {
+    const { dados, carregando, erro, proximoAgendamento, proximo } = useDashboard();
 
-    const [dados, setDados] = useState(null);
-
-    const proximo = dados?.proximo_atendimento;
-
-    useEffect(() => {
-        carregarDashboard();
-    }, []);
-
-    async function carregarDashboard() {
-        try {
-            const resposta = await api.get("/dashboard");
-            setDados(resposta.data);
-            console.log(resposta.data);
-        } catch (erro) {
-            console.error(erro);
-        }
-    }
-
-    if (!dados) {
+    if (carregando) {
         return <h2>Carregando...</h2>;
     }
 
-    const proximoAgendamento =
-        dados.agenda_hoje.length > 0
-            ? dados.agenda_hoje[0]
-            : null;
+    if (erro) {
+        return <h2>{erro}</h2>;
+    }
 
 
     return (
