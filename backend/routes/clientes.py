@@ -27,6 +27,7 @@ def cadastrar_cliente():
     nome = dados.get("nome")
     telefone = dados.get("telefone")
     email = dados.get("email")
+    nota = dados.get("nota")
 
     # Nome e telefone são obrigatórios
     if not nome or not telefone:
@@ -39,10 +40,10 @@ def cadastrar_cliente():
 
     cursor.execute(
         """
-        INSERT INTO clientes (nome, telefone, email)
-        VALUES (?, ?, ?)
+        INSERT INTO clientes (nome, telefone, email, nota)
+        VALUES (?, ?, ?, ?)
         """,
-        (nome, telefone, email)
+        (nome, telefone, email, nota)
     )
 
     conexao.commit()
@@ -63,6 +64,7 @@ def editar_cliente(id):
     nome = dados.get("nome")
     telefone = dados.get("telefone")
     email = dados.get("email")
+    nota = dados.get("nota")
 
     if not nome or not telefone:
         return jsonify({
@@ -74,10 +76,10 @@ def editar_cliente(id):
     conexao.execute(
         """
         UPDATE clientes
-        SET nome = ?, telefone = ?, email = ?
+        SET nome = ?, telefone = ?, email = ?, nota = ?
         WHERE id = ?
         """,
-        (nome, telefone, email, id)
+        (nome, telefone, email, nota, id)
     )
 
     conexao.commit()

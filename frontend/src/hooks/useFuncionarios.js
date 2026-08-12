@@ -60,6 +60,10 @@ export function useFuncionarios() {
     }
 
     function editarFuncionario(funcionario) {
+        if (!funcionario) {
+            setFuncionarioEditando(null);
+            return;
+        }
         setFuncionarioEditando(funcionario.id);
         setNome(funcionario.nome);
         setFuncao(funcionario.funcao);

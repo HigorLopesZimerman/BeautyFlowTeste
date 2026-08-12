@@ -58,6 +58,10 @@ export function useServicos() {
     }
 
     function editarServico(servico) {
+        if (!servico) {
+            setServicoEditando(null);
+            return;
+        }
         setServicoEditando(servico.id);
         setNome(servico.nome);
         setDuracao(servico.duracao);

@@ -110,6 +110,10 @@ export function useAgendamentos() {
     }
 
     function editarAgendamento(agendamento) {
+        if (!agendamento) {
+            setAgendamentoEditando(null);
+            return;
+        }
         setAgendamentoEditando(agendamento.id);
         setClienteId(agendamento.cliente_id);
         setFuncionarioId(agendamento.funcionario_id);

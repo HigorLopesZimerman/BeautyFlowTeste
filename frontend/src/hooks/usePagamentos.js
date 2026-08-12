@@ -97,6 +97,10 @@ export function usePagamentos() {
     }
 
     function editarPagamento(pagamento) {
+        if (!pagamento) {
+            setPagamentoEditando(null);
+            return;
+        }
         setPagamentoEditando(pagamento.id);
         setAgendamentoId(pagamento.agendamento_id);
         setValor(pagamento.valor);

@@ -1,131 +1,96 @@
 import { useRelatorios } from "../hooks/useRelatorios";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
+import { formatCurrency } from "../utils/masks";
 
 export default function Relatorios() {
     const {
         dados,
         inicio, setInicio,
         fim, setFim,
-        faturamentoPeriodo,
-        consultarPeriodo
+        consultarPeriodo,
+        limparFiltro
     } = useRelatorios();
 
     if (!dados) {
-        return <Layout><h2>Carregando...</h2></Layout>;
+        return (
+            <Layout>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <h2 style={{ color: 'var(--text-muted)' }}>Carregando dados de relatórios...</h2>
+                </div>
+            </Layout>
+        );
     }
 
     return (
-
-            <Layout>
-
-            <h1>Relatórios</h1>
-
-            <div
-                style={{
-                        display:"flex",
-                        gap: "10px",
-                        justifyContent: "center"
-                    }}
-            >
-
-            <input
-                    type="date"
-                    value={inicio}
-                    onChange={(e) => setInicio(e.target.value)}
-                />
-
-                <input
-                    type="date"
-                    value={fim}
-                    onChange={(e) => setFim(e.target.value)}
-                />
-
-                <button onClick={consultarPeriodo}>
-                    Consultar
-                </button>
-
+        <Layout>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h1 style={{ margin: 0 }}>Relatórios e Desempenho</h1>
             </div>
 
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-                    gap: "20px",
-                    marginTop: "30px",
-                }}
-            >
+            <div style={{ 
+                background: 'var(--bg-surface)', 
+                padding: '1.5rem', 
+                borderRadius: 'var(--radius-lg)', 
+                boxShadow: 'var(--shadow-md)',
+                marginBottom: '2.5rem',
+                border: '1px solid var(--border-color)'
+            }}>
+                <h3 style={{ margin: '0 0 1rem 0' }}>Filtrar Período</h3>
+                <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                        <label>Data Início</label>
+                        <input
+                            className="input-field"
+                            type="date"
+                            value={inicio}
+                            onChange={(e) => setInicio(e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                        <label>Data Fim</label>
+                        <input
+                            className="input-field"
+                            type="date"
+                            value={fim}
+                            onChange={(e) => setFim(e.target.value)}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button className="btn btn-primary" onClick={consultarPeriodo} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
+                            Filtrar
+                        </button>
+                        <button className="btn" onClick={limparFiltro} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            <div
-                style={{
-                    display: "flex",
-                    gap: "10px",
-                    alignItems: "center",
-                    marginBottom: "30px",
-                }}
-            >
-
+            <h2 style={{ marginBottom: '1.5rem', color: 'var(--text-main)' }}>
+                Visão Geral {inicio && fim ? "(Período Filtrado)" : "(Todo o Período)"}
+            </h2>
+            <div style={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", 
+                gap: "1.5rem" 
+            }}>
+                <Card titulo="Faturamento Confirmado" valor={formatCurrency(dados.faturamento)} emoji="📈" colorClass="success" />
+                <Card titulo="Agendamentos Realizados" valor={dados.total_agendamentos} emoji="📅" colorClass="primary" />
+                <Card titulo="Agendamentos Cancelados" valor={dados.agendamentos_cancelados} emoji="❌" colorClass="danger" />
+                <Card titulo="Pagamentos Pendentes" valor={dados.pagamentos_pendentes} emoji="💳" colorClass="warning" />
+                <Card titulo="Valor Pendente Total" valor={formatCurrency(dados.valor_pendente)} emoji="💰" colorClass="warning" />
                 
-
+                {dados.servico && (
+                    <Card titulo="Serviço Mais Realizado" valor={dados.servico.nome} emoji="✂️" colorClass="success" />
+                )}
+                {dados.cliente && (
+                    <Card titulo="Cliente Mais Frequente" valor={dados.cliente.nome} emoji="👤" colorClass="text-main" />
+                )}
+                {dados.funcionario && (
+                    <Card titulo="Funcionário Destaque" valor={dados.funcionario.nome} emoji="💼" colorClass="primary" />
+                )}
             </div>
-
-            {faturamentoPeriodo !== null && (
-
-                <Card
-                    titulo="Faturamento no período"
-                    valor={`R$ ${faturamentoPeriodo}`}
-                    emoji="📈"
-                />
-
-            )}
-
-                <Card
-                    titulo="Serviço mais realizado"
-                    valor={dados.servico.nome}
-                    emoji="✂️"
-                />
-
-                <Card
-                    titulo="Cliente mais frequente"
-                    valor={dados.cliente.nome}
-                    emoji="👤"
-                />
-
-                <Card
-                    titulo="Funcionário destaque"
-                    valor={dados.funcionario.nome}
-                    emoji="💼"
-                />
-
-                <Card
-                    titulo="Agendamentos"
-                    valor={dados.total_agendamentos}
-                    emoji="📅"
-                />
-
-                <Card
-                    titulo="Cancelados"
-                    valor={dados.agendamentos_cancelados}
-                    emoji="❌"
-                />
-
-                <Card
-                    titulo="Pendentes"
-                    valor={dados.pagamentos_pendentes}
-                    emoji="💳"
-                />
-
-                <Card
-                    titulo="Valor Pendente"
-                    valor={`R$ ${dados.valor_pendente}`}
-                    emoji="💰"
-                />
-
-            </div>
-
         </Layout>
     );
-
-    
-
 }

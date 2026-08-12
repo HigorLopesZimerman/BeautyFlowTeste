@@ -17,7 +17,8 @@ def criar_banco():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
             telefone TEXT NOT NULL,
-            email TEXT
+            email TEXT,
+            nota TEXT
         )
     """)
     
@@ -89,6 +90,11 @@ def criar_banco():
     
     
     
+    try:
+        cursor.execute("ALTER TABLE clientes ADD COLUMN nota TEXT")
+    except sqlite3.OperationalError:
+        pass # A coluna já existe
+
     conexao.commit()
     conexao.close()
     

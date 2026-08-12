@@ -37,7 +37,7 @@ def dashboard():
     faturamento = conexao.execute("""
         SELECT SUM(valor)
         FROM pagamentos
-        WHERE status = 'pago'
+        WHERE LOWER(status) = 'pago'
         """).fetchone()[0]
     if faturamento is None:
         faturamento = 0
@@ -46,6 +46,7 @@ def dashboard():
     agenda_hoje = conexao.execute("""
         SELECT
             c.nome AS cliente,
+            c.nota AS cliente_nota,
             s.nome AS servico,
             a.hora
 
@@ -66,14 +67,14 @@ def dashboard():
     pagamentos_pendentes = conexao.execute("""
         SELECT COUNT(*)
         FROM pagamentos
-        WHERE status = "pendente"
+        WHERE LOWER(status) = 'pendente'
     """).fetchone()[0]
     
     
     valor_pendente = conexao.execute("""
         SELECT SUM(valor)
         FROM pagamentos
-        WHERE status = 'pendente'
+        WHERE LOWER(status) = 'pendente'
     """).fetchone()[0]
 
     if valor_pendente is None:
@@ -83,6 +84,7 @@ def dashboard():
     proximo_atendimento = conexao.execute("""
         SELECT
             c.nome AS cliente,
+            c.nota AS cliente_nota,
             s.nome AS servico,
             a.data,
             a.hora
@@ -152,7 +154,7 @@ def pagamentos_pendentes():
         JOIN servicos s
             ON a.servico_id = s.id
             
-        WHERE p.status = 'pendente'
+        WHERE LOWER(p.status) = 'pendente'
         
         ORDER BY p.data_pagamento
     """).fetchall()

@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
-import { getRelatorios, getFaturamentoPeriodo } from "../services/relatorioService";
+import { getRelatorios } from "../services/relatorioService";
 
 export function useRelatorios() {
     const [dados, setDados] = useState(null);
     const [inicio, setInicio] = useState("");
     const [fim, setFim] = useState("");
-    const [faturamentoPeriodo, setFaturamentoPeriodo] = useState(null);
 
     useEffect(() => {
         carregarRelatorios();
     }, []);
 
-    async function carregarRelatorios() {
+    async function carregarRelatorios(dataInicio = "", dataFim = "") {
         try {
-            const data = await getRelatorios();
+            const data = await getRelatorios(dataInicio, dataFim);
             setDados(data);
         } catch (erro) {
             console.error(erro);
@@ -25,20 +24,18 @@ export function useRelatorios() {
             alert("Selecione as duas datas.");
             return;
         }
-
-        try {
-            const faturamento = await getFaturamentoPeriodo(inicio, fim);
-            setFaturamentoPeriodo(faturamento);
-        } catch (erro) {
-            console.error(erro);
-        }
+        await carregarRelatorios(inicio, fim);
     }
 
     return {
         dados,
         inicio, setInicio,
         fim, setFim,
-        faturamentoPeriodo,
-        consultarPeriodo
+        consultarPeriodo,
+        limparFiltro: () => {
+            setInicio("");
+            setFim("");
+            carregarRelatorios("", "");
+        }
     };
 }
