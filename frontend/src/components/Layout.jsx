@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, UserSquare2, Scissors, CalendarDays, Wallet, BarChart3, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, UserSquare2, Scissors, CalendarDays, Wallet, BarChart3, LogOut, Sparkles } from "lucide-react";
 import { logout } from "../services/authService";
 import "./Layout.css";
 
@@ -26,7 +26,7 @@ export default function Layout({ children }) {
         <div className="layout-container">
             <aside className="sidebar">
                 <h2>
-                    <span style={{ fontSize: "1.8rem" }}>✨</span> BeautyFlow
+                    <Sparkles size={28} className="text-primary" style={{ marginRight: '8px' }} /> BeautyFlow
                 </h2>
                 
                 <nav className="nav-menu">

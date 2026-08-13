@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Calendar, User, Scissors, MessageCircle } from 'lucide-react';
+import { Phone, Calendar, User, Scissors, MessageCircle, FileText } from 'lucide-react';
 
 export default function AgendamentoActionModal({ agendamento, onClose, onStatusChange, onVerComanda }) {
     if (!agendamento) return null;
@@ -34,8 +34,8 @@ export default function AgendamentoActionModal({ agendamento, onClose, onStatusC
                         <Scissors size={18} /> {agendamento.servico}
                     </div>
                     {agendamento.cliente_nota && (
-                        <div style={{ background: 'var(--bg-app)', padding: '10px', borderRadius: '8px', fontSize: '0.9rem' }}>
-                            📝 {agendamento.cliente_nota}
+                        <div style={{ background: 'var(--bg-app)', padding: '10px', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <FileText size={16} /> {agendamento.cliente_nota}
                         </div>
                     )}
 

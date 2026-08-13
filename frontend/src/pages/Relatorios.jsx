@@ -2,6 +2,7 @@ import { useRelatorios } from "../hooks/useRelatorios";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 import { formatCurrency } from "../utils/masks";
+import { TrendingUp, Calendar, XCircle, CreditCard, DollarSign, Scissors, User, Briefcase } from "lucide-react";
 
 export default function Relatorios() {
     const {
@@ -75,20 +76,20 @@ export default function Relatorios() {
                 gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", 
                 gap: "1.5rem" 
             }}>
-                <Card titulo="Faturamento Confirmado" valor={formatCurrency(dados.faturamento)} emoji="📈" colorClass="success" />
-                <Card titulo="Agendamentos Realizados" valor={dados.total_agendamentos} emoji="📅" colorClass="primary" />
-                <Card titulo="Agendamentos Cancelados" valor={dados.agendamentos_cancelados} emoji="❌" colorClass="danger" />
-                <Card titulo="Pagamentos Pendentes" valor={dados.pagamentos_pendentes} emoji="💳" colorClass="warning" />
-                <Card titulo="Valor Pendente Total" valor={formatCurrency(dados.valor_pendente)} emoji="💰" colorClass="warning" />
+                <Card titulo="Faturamento Confirmado" valor={formatCurrency(dados.faturamento)} icon={TrendingUp} colorClass="success" />
+                <Card titulo="Agendamentos Realizados" valor={dados.total_agendamentos} icon={Calendar} colorClass="primary" />
+                <Card titulo="Agendamentos Cancelados" valor={dados.agendamentos_cancelados} icon={XCircle} colorClass="danger" />
+                <Card titulo="Pagamentos Pendentes" valor={dados.pagamentos_pendentes} icon={CreditCard} colorClass="warning" />
+                <Card titulo="Valor Pendente Total" valor={formatCurrency(dados.valor_pendente)} icon={DollarSign} colorClass="warning" />
                 
                 {dados.servico && (
-                    <Card titulo="Serviço Mais Realizado" valor={dados.servico.nome} emoji="✂️" colorClass="success" />
+                    <Card titulo="Serviço Mais Realizado" valor={dados.servico.nome} icon={Scissors} colorClass="success" />
                 )}
                 {dados.cliente && (
-                    <Card titulo="Cliente Mais Frequente" valor={dados.cliente.nome} emoji="👤" colorClass="text-main" />
+                    <Card titulo="Cliente Mais Frequente" valor={dados.cliente.nome} icon={User} colorClass="text-main" />
                 )}
                 {dados.funcionario && (
-                    <Card titulo="Funcionário Destaque" valor={dados.funcionario.nome} emoji="💼" colorClass="primary" />
+                    <Card titulo="Funcionário Destaque" valor={dados.funcionario.nome} icon={Briefcase} colorClass="primary" />
                 )}
             </div>
         </Layout>

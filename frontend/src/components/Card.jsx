@@ -1,4 +1,4 @@
-export default function Card({ titulo, valor, emoji, colorClass = "primary" }) {
+export default function Card({ titulo, valor, icon: Icon, colorClass = "primary" }) {
     return (
         <div
             style={{
@@ -18,7 +18,20 @@ export default function Card({ titulo, valor, emoji, colorClass = "primary" }) {
                 <h3 style={{ margin: 0, fontSize: "1rem", color: "var(--text-muted)", fontWeight: "500" }}>
                     {titulo}
                 </h3>
-                <span style={{ fontSize: "1.5rem" }}>{emoji}</span>
+                {Icon && (
+                    <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        background: `var(--${colorClass}-light, rgba(0,0,0,0.05))`,
+                        color: `var(--${colorClass})`
+                    }}>
+                        <Icon size={20} />
+                    </div>
+                )}
             </div>
 
             <p 

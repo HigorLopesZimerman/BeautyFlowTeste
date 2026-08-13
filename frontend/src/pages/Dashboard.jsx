@@ -2,14 +2,13 @@ import { useDashboard } from "../hooks/useDashboard";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 import { formatCurrency } from "../utils/masks";
-import { Calendar, Clock, User, Scissors } from "lucide-react";
+import { Calendar, Clock, User, Scissors, MessageCircle, DollarSign, AlertCircle, CreditCard, Users, FileText, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import AgendamentoActionModal from "../components/AgendamentoActionModal";
 import ComandaModal from "../components/ComandaModal";
 import PagamentoModal from "../components/PagamentoModal";
 import { updateAgendamentoStatus } from "../services/agendamentoService";
 import { createPagamento } from "../services/pagamentoService";
-import { MessageCircle } from "lucide-react";
 
 export default function Dashboard() {
     const { dados, carregando, erro, proximoAgendamento, proximo, recarregarDashboard } = useDashboard();
@@ -98,12 +97,12 @@ export default function Dashboard() {
                 gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", 
                 gap: "1.5rem" 
             }}>
-                <Card titulo="Faturamento (Hoje)" valor={formatCurrency(dados.faturamento)} emoji="💰" colorClass="success" />
-                <Card titulo="Valores Pendentes" valor={formatCurrency(dados.valor_pendente)} emoji="🟡" colorClass="warning" />
-                <Card titulo="Agendamentos" valor={dados.agendamentos} emoji="📅" colorClass="primary" />
-                <Card titulo="Pagamentos" valor={dados.pagamentos} emoji="💳" colorClass="primary" />
-                <Card titulo="Clientes Cadastrados" valor={dados.clientes} emoji="👥" colorClass="text-main" />
-                <Card titulo="Serviços Ativos" valor={dados.servicos} emoji="✂️" colorClass="text-main" />
+                <Card titulo="Faturamento (Hoje)" valor={formatCurrency(dados.faturamento)} icon={DollarSign} colorClass="success" />
+                <Card titulo="Valores Pendentes" valor={formatCurrency(dados.valor_pendente)} icon={AlertCircle} colorClass="warning" />
+                <Card titulo="Agendamentos" valor={dados.agendamentos} icon={Calendar} colorClass="primary" />
+                <Card titulo="Pagamentos" valor={dados.pagamentos} icon={CreditCard} colorClass="primary" />
+                <Card titulo="Clientes Cadastrados" valor={dados.clientes} icon={Users} colorClass="text-main" />
+                <Card titulo="Serviços Ativos" valor={dados.servicos} icon={Scissors} colorClass="text-main" />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
@@ -133,8 +132,8 @@ export default function Dashboard() {
                                 <User size={20} /> 
                                 {proximoAtendimento.cliente}
                                 {proximoAtendimento.cliente_nota && (
-                                    <span style={{ fontSize: '0.9rem', background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', marginLeft: '8px' }}>
-                                        📝 {proximoAtendimento.cliente_nota}
+                                    <span style={{ fontSize: '0.9rem', background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', marginLeft: '8px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                        <FileText size={14} /> {proximoAtendimento.cliente_nota}
                                     </span>
                                 )}
                             </div>
@@ -153,7 +152,7 @@ export default function Dashboard() {
                                     flexDirection: 'column',
                                     gap: '10px'
                                 }}>
-                                    <span>⚠️ Pendente de Confirmação! Entre em contato.</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><AlertTriangle size={18} /> Pendente de Confirmação! Entre em contato.</span>
                                     <button 
                                         className="btn" 
                                         style={{ background: '#25D366', color: 'white', display: 'flex', justifyContent: 'center', gap: '10px', border: 'none', padding: '8px' }}
@@ -210,8 +209,8 @@ export default function Dashboard() {
                                         </strong>
                                         <span style={{ fontWeight: '500' }}>{agendamento.cliente}</span>
                                         {agendamento.cliente_nota && (
-                                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                                                📝 {agendamento.cliente_nota}
+                                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                <FileText size={14} /> {agendamento.cliente_nota}
                                             </div>
                                         )}
                                     </div>

@@ -25,12 +25,11 @@ export default function Funcionarios() {
         if (funcionario) {
             editarFuncionario(funcionario);
         } else {
-            // Limpa form para novo cadastro
             setNome("");
             setFuncao("");
             setTelefone("");
             setEmail("");
-            editarFuncionario(null); // Reseta estado de edição
+            editarFuncionario(null);
         }
         setIsModalOpen(true);
     };
@@ -122,11 +121,11 @@ export default function Funcionarios() {
             >
                 <form onSubmit={handleSave}>
                     <div className="form-group">
-                        <label>Nome Completo *</label>
+                        <label>Nome Completo</label>
                         <input
                             className="input-field"
                             type="text"
-                            placeholder="Ex: Carlos Souza"
+                            placeholder="Nome do funcionário"
                             value={nome}
                             onChange={(e) => setNome(e.target.value)}
                             required
@@ -134,11 +133,11 @@ export default function Funcionarios() {
                     </div>
 
                     <div className="form-group">
-                        <label>Função *</label>
+                        <label>Função</label>
                         <input
                             className="input-field"
                             type="text"
-                            placeholder="Ex: Cabeleireiro"
+                            placeholder="Cargo"
                             value={funcao}
                             onChange={(e) => setFuncao(e.target.value)}
                             required
@@ -146,11 +145,11 @@ export default function Funcionarios() {
                     </div>
 
                     <div className="form-group">
-                        <label>Telefone *</label>
+                        <label>Telefone</label>
                         <input
                             className="input-field"
                             type="tel"
-                            placeholder="Ex: (11) 99999-9999"
+                            placeholder="(00) 00000-0000"
                             value={telefone}
                             onChange={(e) => setTelefone(formatPhone(e.target.value))}
                             required
@@ -162,7 +161,7 @@ export default function Funcionarios() {
                         <input
                             className="input-field"
                             type="email"
-                            placeholder="Ex: carlos@email.com"
+                            placeholder="email@exemplo.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
