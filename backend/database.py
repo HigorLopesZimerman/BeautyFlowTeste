@@ -56,6 +56,7 @@ def criar_banco():
 
         data TEXT NOT NULL,
         hora TEXT NOT NULL,
+        hora_fim TEXT,
 
         status TEXT DEFAULT 'agendado',
 
@@ -92,6 +93,11 @@ def criar_banco():
     
     try:
         cursor.execute("ALTER TABLE clientes ADD COLUMN nota TEXT")
+    except sqlite3.OperationalError:
+        pass # A coluna já existe
+
+    try:
+        cursor.execute("ALTER TABLE agendamentos ADD COLUMN hora_fim TEXT")
     except sqlite3.OperationalError:
         pass # A coluna já existe
 

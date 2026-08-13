@@ -50,6 +50,8 @@ def cadastrar_agendamento():
     servico_id = dados.get("servico_id")
     data = dados.get("data")
     hora = dados.get("hora")
+    hora_fim = dados.get("hora_fim")
+    status = dados.get("status", "agendado")
     
     if not all([cliente_id, funcionario_id, servico_id, data, hora]):
         return jsonify({
@@ -119,15 +121,19 @@ def cadastrar_agendamento():
             funcionario_id,
             servico_id,
             data,
-            hora
+            hora,
+            hora_fim,
+            status
         )
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         cliente_id,
         funcionario_id,
         servico_id,
         data,
-        hora
+        hora,
+        hora_fim,
+        status
     ))
     
     conexao.commit()
@@ -150,6 +156,7 @@ def editar_agendamento(id):
     servico_id = dados.get("servico_id")
     data = dados.get("data")
     hora = dados.get("hora")
+    hora_fim = dados.get("hora_fim")
     status = dados.get("status")
 
     if not all([
@@ -245,6 +252,7 @@ def editar_agendamento(id):
             servico_id = ?,
             data = ?,
             hora = ?,
+            hora_fim = ?,
             status = ?
         WHERE id = ?
     """, (
@@ -253,6 +261,7 @@ def editar_agendamento(id):
         servico_id,
         data,
         hora,
+        hora_fim,
         status,
         id
     ))

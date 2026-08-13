@@ -26,5 +26,5 @@ export function useDashboard() {
     const proximoAgendamento = dados?.agenda_hoje?.length > 0 ? dados.agenda_hoje[0] : null;
     const proximo = dados?.proximo_atendimento;
 
-    return { dados, carregando, erro, proximoAgendamento, proximo };
+    return { dados, carregando, erro, proximoAgendamento, proximo, recarregarDashboard: carregar };
 }

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAgendamentos } from "../hooks/useAgendamentos";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import api from "../services/api";
 
 export default function Agendamentos() {
     const {
@@ -12,6 +13,7 @@ export default function Agendamentos() {
         servicoId, setServicoId,
         data, setData,
         hora, setHora,
+        horaFim, setHoraFim,
         status,
         agendamentoEditando,
         filtroStatus, setFiltroStatus,
@@ -24,6 +26,34 @@ export default function Agendamentos() {
     } = useAgendamentos();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [historicoCliente, setHistoricoCliente] = useState(null);
+
+    // Efeito para carregar o histórico do cliente (Prontuário)
+    useEffect(() => {
+        if (clienteId) {
+            api.get(`/clientes/${clienteId}/historico`)
+                .then(res => setHistoricoCliente(res.data))
+                .catch(() => setHistoricoCliente(null));
+        } else {
+            setHistoricoCliente(null);
+        }
+    }, [clienteId]);
+
+    // Efeito para calcular a hora fim automaticamente (Smart Defaults)
+    useEffect(() => {
+        if (hora && servicoId) {
+            const servico = servicos.find(s => s.id === parseInt(servicoId));
+            if (servico && servico.duracao && !agendamentoEditando) {
+                const [h, m] = hora.split(':').map(Number);
+                let newM = m + servico.duracao;
+                let newH = h + Math.floor(newM / 60);
+                newM = newM % 60;
+                newH = newH % 24;
+                const horaFimStr = `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+                setHoraFim(horaFimStr);
+            }
+        }
+    }, [hora, servicoId, agendamentoEditando, servicos, setHoraFim]);
 
     const handleOpenModal = (agendamento = null) => {
         if (agendamento) {
@@ -56,6 +86,9 @@ export default function Agendamentos() {
         } else if (statusValue === "cancelado") {
             badgeClass = "badge-danger";
             label = "Cancelado";
+        } else if (statusValue === "confirmado") {
+            badgeClass = "badge-primary";
+            label = "Confirmado";
         } else if (statusValue === "agendado") {
             badgeClass = "badge-warning";
             label = "Agendado";
@@ -98,6 +131,12 @@ export default function Agendamentos() {
                         onClick={() => setFiltroStatus("agendado")}
                     >
                         Agendados
+                    </button>
+                    <button 
+                        className={`btn ${filtroStatus === "confirmado" ? "btn-primary" : "btn-outline"}`}
+                        onClick={() => setFiltroStatus("confirmado")}
+                    >
+                        Confirmados
                     </button>
                     <button 
                         className={`btn ${filtroStatus === "concluido" ? "btn-success" : "btn-outline"}`}
@@ -143,6 +182,7 @@ export default function Agendamentos() {
                                         onChange={(e) => alterarStatus(agendamento.id, e.target.value)}
                                     >
                                         <option value="agendado">🟡 Agendado</option>
+                                        <option value="confirmado">🔵 Confirmado</option>
                                         <option value="concluido">🟢 Concluído</option>
                                         <option value="cancelado">🔴 Cancelado</option>
                                     </select>
@@ -202,6 +242,16 @@ export default function Agendamentos() {
                                 <option key={c.id} value={c.id}>{c.nome}</option>
                             ))}
                         </select>
+                        {historicoCliente && historicoCliente.tem_historico && (
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                🕒 Última visita: {historicoCliente.data_ultima_visita.split('-').reverse().join('/')} ({historicoCliente.servico_ultima_visita})
+                            </div>
+                        )}
+                        {historicoCliente && !historicoCliente.tem_historico && clienteId && (
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                ⭐ Primeira visita!
+                            </div>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -247,13 +297,25 @@ export default function Agendamentos() {
                         </div>
 
                         <div className="form-group" style={{ flex: 1 }}>
-                            <label>Hora *</label>
+                            <label>Início *</label>
                             <input
                                 className="input-field"
                                 type="time"
                                 value={hora}
                                 onChange={(e) => setHora(e.target.value)}
                                 required
+                            />
+                        </div>
+
+                        <div className="form-group" style={{ flex: 1 }}>
+                            <label>Término</label>
+                            <input
+                                className="input-field"
+                                type="time"
+                                value={horaFim}
+                                onChange={(e) => {}}
+                                disabled
+                                style={{ background: 'var(--bg-app)', color: 'var(--text-muted)' }}
                             />
                         </div>
                     </div>

@@ -15,7 +15,8 @@ export function useAgendamentos() {
     const [servicoId, setServicoId] = useState("");
     const [data, setData] = useState("");
     const [hora, setHora] = useState("");
-    const [status, setStatus] = useState("");
+    const [horaFim, setHoraFim] = useState("");
+    const [status, setStatus] = useState("agendado");
 
     const [agendamentoEditando, setAgendamentoEditando] = useState(null);
     const [filtroStatus, setFiltroStatus] = useState("Todos");
@@ -64,6 +65,7 @@ export function useAgendamentos() {
                     servico_id: servicoId,
                     data,
                     hora,
+                    hora_fim: horaFim,
                     status
                 });
                 setAgendamentoEditando(null);
@@ -73,7 +75,9 @@ export function useAgendamentos() {
                     funcionario_id: funcionarioId,
                     servico_id: servicoId,
                     data,
-                    hora
+                    hora,
+                    hora_fim: horaFim,
+                    status: status || "agendado"
                 });
             }
 
@@ -82,6 +86,8 @@ export function useAgendamentos() {
             setServicoId("");
             setData("");
             setHora("");
+            setHoraFim("");
+            setStatus("agendado");
             carregarAgendamentos();
         } catch (erro) {
             console.error(erro);
@@ -119,8 +125,9 @@ export function useAgendamentos() {
         setFuncionarioId(agendamento.funcionario_id);
         setServicoId(agendamento.servico_id);
         setData(agendamento.data);
-        setHora(agendamento.hora);
-        setStatus(agendamento.status);
+        setHora(agendamento.hora || "");
+        setHoraFim(agendamento.hora_fim || "");
+        setStatus(agendamento.status || "agendado");
     }
 
     const agendamentosFiltrados = agendamentos.filter((agendamento) => {
@@ -142,6 +149,7 @@ export function useAgendamentos() {
         servicoId, setServicoId,
         data, setData,
         hora, setHora,
+        horaFim, setHoraFim,
         status, setStatus,
         agendamentoEditando,
         filtroStatus, setFiltroStatus,

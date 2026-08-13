@@ -19,6 +19,34 @@ def listar_clientes():
     return jsonify([dict(cliente) for cliente in clientes])
 
 
+@clientes_bp.route("/clientes/<int:id>/historico", methods=["GET"])
+def historico_cliente(id):
+    conexao = conectar()
+
+    # Busca o último agendamento (concluído) desse cliente
+    ultimo_agendamento = conexao.execute("""
+        SELECT a.data, s.nome as servico
+        FROM agendamentos a
+        JOIN servicos s ON a.servico_id = s.id
+        WHERE a.cliente_id = ? AND a.status = 'concluido'
+        ORDER BY a.data DESC, a.hora DESC
+        LIMIT 1
+    """, (id,)).fetchone()
+
+    conexao.close()
+
+    if ultimo_agendamento:
+        return jsonify({
+            "tem_historico": True,
+            "data_ultima_visita": ultimo_agendamento["data"],
+            "servico_ultima_visita": ultimo_agendamento["servico"]
+        })
+    else:
+        return jsonify({
+            "tem_historico": False
+        })
+
+
 # Cadastrar cliente
 @clientes_bp.route("/clientes", methods=["POST"])
 def cadastrar_cliente():

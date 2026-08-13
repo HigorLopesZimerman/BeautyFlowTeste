@@ -45,10 +45,14 @@ def dashboard():
 
     agenda_hoje = conexao.execute("""
         SELECT
+            a.id,
+            a.status,
+            a.hora,
             c.nome AS cliente,
+            c.telefone AS telefone_cliente,
             c.nota AS cliente_nota,
             s.nome AS servico,
-            a.hora
+            s.preco AS preco
 
         FROM agendamentos a
 
@@ -83,11 +87,15 @@ def dashboard():
         
     proximo_atendimento = conexao.execute("""
         SELECT
+            a.id,
+            a.status,
+            a.data,
+            a.hora,
             c.nome AS cliente,
+            c.telefone AS telefone_cliente,
             c.nota AS cliente_nota,
             s.nome AS servico,
-            a.data,
-            a.hora
+            s.preco AS preco
 
         FROM agendamentos a
 
