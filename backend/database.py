@@ -1,4 +1,5 @@
 import sqlite3
+from werkzeug.security import generate_password_hash
 
 DATABASE = "beautyflow.db"
 
@@ -49,23 +50,23 @@ def criar_banco():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS agendamentos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-
+        
         cliente_id INTEGER NOT NULL,
         funcionario_id INTEGER NOT NULL,
         servico_id INTEGER NOT NULL,
-
+        
         data TEXT NOT NULL,
         hora TEXT NOT NULL,
         hora_fim TEXT,
-
+        
         status TEXT DEFAULT 'agendado',
-
+        
         FOREIGN KEY (cliente_id)
             REFERENCES clientes(id),
-
+            
         FOREIGN KEY (funcionario_id)
             REFERENCES funcionarios(id),
-
+            
         FOREIGN KEY (servico_id)
             REFERENCES servicos(id)
     )
@@ -88,8 +89,15 @@ def criar_banco():
         )
     """)
     
-    
-    
+    # Tabela de Usuários
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            senha TEXT NOT NULL
+        )
+    """)
     
     try:
         cursor.execute("ALTER TABLE clientes ADD COLUMN nota TEXT")
@@ -100,6 +108,15 @@ def criar_banco():
         cursor.execute("ALTER TABLE agendamentos ADD COLUMN hora_fim TEXT")
     except sqlite3.OperationalError:
         pass # A coluna já existe
+
+    # Inserir administrador padrão caso não haja usuários
+    cursor.execute("SELECT COUNT(*) FROM usuarios")
+    if cursor.fetchone()[0] == 0:
+        senha_hash = generate_password_hash("admin123")
+        cursor.execute("""
+            INSERT INTO usuarios (nome, email, senha)
+            VALUES (?, ?, ?)
+        """, ("Administrador", "admin@beautyflow.com", senha_hash))
 
     conexao.commit()
     conexao.close()

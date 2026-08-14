@@ -26,7 +26,7 @@ export default function Layout({ children }) {
         <div className="layout-container">
             <aside className="sidebar">
                 <h2>
-                    <Sparkles size={28} className="text-primary" style={{ marginRight: '8px' }} /> BeautyFlow
+                    <Scissors size={28} className="text-primary" style={{ marginRight: '8px' }} /> BeautyFlow
                 </h2>
                 
                 <nav className="nav-menu">

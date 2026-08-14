@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../services/authService";
-import { Lock, Mail, ArrowRight } from "lucide-react";
+import { Lock, Mail, ArrowRight, Scissors } from "lucide-react";
 import "../index.css";
 
 export default function Login() {
@@ -9,13 +9,13 @@ export default function Login() {
     const [senha, setSenha] = useState("");
     const [erro, setErro] = useState("");
     const [carregando, setCarregando] = useState(false);
-    
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErro("");
-        
+
         if (!email || !senha) {
             setErro("Preencha todos os campos.");
             return;
@@ -54,12 +54,12 @@ export default function Login() {
                 maxWidth: "450px",
                 textAlign: "center"
             }}>
-                
+
                 <div style={{ marginBottom: "2rem" }}>
-                    <div style={{ 
-                        width: "60px", 
-                        height: "60px", 
-                        background: "var(--primary-light)", 
+                    <div style={{
+                        width: "60px",
+                        height: "60px",
+                        background: "var(--primary-light)",
                         borderRadius: "16px",
                         display: "flex",
                         alignItems: "center",
@@ -67,17 +67,17 @@ export default function Login() {
                         margin: "0 auto 1rem auto",
                         color: "var(--primary)"
                     }}>
-                        <Lock size={32} />
+                        <Scissors size={32} />
                     </div>
                     <h1 style={{ margin: "0 0 0.5rem 0", color: "var(--text-main)", fontSize: "2rem" }}>BeautyFlow</h1>
                     <p style={{ color: "var(--text-muted)", margin: 0 }}>Gestão inteligente para o seu salão</p>
                 </div>
 
                 {erro && (
-                    <div style={{ 
-                        background: "#fef2f2", 
-                        color: "var(--danger)", 
-                        padding: "1rem", 
+                    <div style={{
+                        background: "#fef2f2",
+                        color: "var(--danger)",
+                        padding: "1rem",
                         borderRadius: "var(--radius-md)",
                         marginBottom: "1.5rem",
                         fontSize: "0.9rem",
@@ -118,9 +118,9 @@ export default function Login() {
                         </div>
                     </div>
 
-                    <button 
-                        type="submit" 
-                        className="btn btn-primary" 
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
                         style={{ width: "100%", justifyContent: "center", padding: "0.8rem", fontSize: "1.1rem" }}
                         disabled={carregando}
                     >
@@ -129,8 +129,15 @@ export default function Login() {
                     </button>
                 </form>
 
-                <div style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.85rem" }}>
-                    Para testar o MVP, use:<br/>
+                <div style={{ marginTop: "1.5rem", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                    Não tem uma conta?{" "}
+                    <Link to="/cadastro" style={{ color: "var(--primary)", fontWeight: "600", textDecoration: "none" }}>
+                        Cadastre-se
+                    </Link>
+                </div>
+
+                <div style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.85rem", opacity: 0.8 }}>
+                    Para testar o MVP, use:<br />
                     <strong>admin@beautyflow.com</strong> / <strong>admin123</strong>
                 </div>
             </div>
