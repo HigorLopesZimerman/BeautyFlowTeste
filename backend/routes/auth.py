@@ -11,6 +11,9 @@ SECRET_KEY = "beautyflow_super_secret"
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if request.method == "OPTIONS":
+            return f(None, *args, **kwargs)
+            
         token = None
         if "Authorization" in request.headers:
             parts = request.headers["Authorization"].split()
