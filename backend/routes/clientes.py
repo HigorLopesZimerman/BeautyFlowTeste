@@ -134,3 +134,24 @@ def excluir_cliente(id):
     return jsonify({
         "mensagem": "Cliente excluído com sucesso!"
     })
+
+# Buscar clientes ausentes (retenção)
+@clientes_bp.route("/clientes/ausentes", methods=["GET"])
+def clientes_ausentes():
+    conexao = conectar()
+    
+    # Busca clientes cujo último agendamento foi há mais de 30 dias
+    clientes = conexao.execute("""
+        SELECT c.id, c.nome, c.telefone, MAX(a.data) as ultima_visita
+        FROM clientes c
+        JOIN agendamentos a ON c.id = a.cliente_id
+        WHERE a.status = 'concluido'
+        GROUP BY c.id, c.nome, c.telefone
+        HAVING date(ultima_visita) <= date('now', '-30 days')
+        ORDER BY ultima_visita ASC
+        LIMIT 5
+    """).fetchall()
+    
+    conexao.close()
+    
+    return jsonify([dict(cliente) for cliente in clientes])

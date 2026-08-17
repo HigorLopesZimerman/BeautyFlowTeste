@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { getDashboardData } from "../services/dashboardService";
+import api from "../services/api";
 
 export function useDashboard() {
     const [dados, setDados] = useState(null);
@@ -14,7 +15,15 @@ export function useDashboard() {
         try {
             setCarregando(true);
             const dadosApi = await getDashboardData();
-            setDados(dadosApi);
+            
+            // Buscar clientes ausentes para retenção
+            let ausentes = [];
+            try {
+                const resAusentes = await api.get('/clientes/ausentes');
+                ausentes = resAusentes.data;
+            } catch (e) {}
+
+            setDados({ ...dadosApi, ausentes });
         } catch (error) {
             console.error(error);
             setErro("Falha ao carregar os dados do dashboard.");

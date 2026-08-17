@@ -42,7 +42,7 @@ export default function Layout({ children }) {
                     ))}
                 </nav>
 
-                <div style={{ marginTop: 'auto', padding: '1rem', borderTop: '1px solid var(--border-color)' }}>
+                <div className="logout-container" style={{ marginTop: 'auto', padding: '1rem', borderTop: '1px solid var(--border-color)' }}>
                     <button 
                         onClick={handleLogout}
                         style={{

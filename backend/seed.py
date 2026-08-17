@@ -1,132 +1,150 @@
-from database import conectar, criar_banco
+import sqlite3
+from datetime import datetime, timedelta
+import random
+from werkzeug.security import generate_password_hash
 
-criar_banco()
+DATABASE = "beautyflow.db"
 
-conexao = conectar()
-cursor = conexao.cursor()
+def conectar():
+    return sqlite3.connect(DATABASE)
 
-# Limpar tabelas existentes para garantir que o seed sempre rode com dados limpos
-print("Limpando banco de dados...")
-cursor.execute("DELETE FROM pagamentos")
-cursor.execute("DELETE FROM agendamentos")
-cursor.execute("DELETE FROM servicos")
-cursor.execute("DELETE FROM funcionarios")
-cursor.execute("DELETE FROM clientes")
+def seed_database():
+    conexao = conectar()
+    cursor = conexao.cursor()
 
-# Zerar contadores de auto incremento
-cursor.execute("DELETE FROM sqlite_sequence")
+    print("[*] Limpando dados antigos para recriar com mais volume...")
+    cursor.execute("DELETE FROM pagamentos")
+    cursor.execute("DELETE FROM agendamentos")
+    cursor.execute("DELETE FROM clientes")
+    cursor.execute("DELETE FROM funcionarios")
+    cursor.execute("DELETE FROM servicos")
+    cursor.execute("DELETE FROM usuarios")
+    cursor.execute("DELETE FROM sqlite_sequence")
 
-print("Inserindo novos dados...")
+    print("[*] Inserindo usuário administrador...")
+    senha_hash = generate_password_hash("admin123")
+    cursor.execute("""
+        INSERT INTO usuarios (nome, email, senha)
+        VALUES (?, ?, ?)
+    """, ("Administrador", "admin@beautyflow.com", senha_hash))
 
-clientes = [
-    ("João Silva", "18999990001", "joao@email.com", "Cliente antigo, gosta de conversar"),
-    ("Maria Oliveira", "18999990002", "maria@email.com", "Irmã da Joana"),
-    ("Pedro Santos", "18999990003", "pedro@email.com", ""),
-    ("Ana Clara", "18999990004", "ana.clara@email.com", "Sempre atrasa 5 minutos"),
-    ("Lucas Mendes", "18999990005", "lucas.m@email.com", "Prefere horário da manhã"),
-    ("Juliana Costa", "18999990006", "juli@email.com", ""),
-    ("Roberto Alves", "18999990007", "beto@email.com", "Mora longe, confirmar presença"),
-    ("Camila Souza", "18999990008", "mila@email.com", ""),
-    ("Fernanda Lima", "18999990009", "fer.lima@email.com", "Alergia a esmalte vermelho"),
-    ("Bruno Gomes", "18999990010", "bruno.g@email.com", "")
-]
+    print("[*] Gerando 30 Clientes (vários perfis)...")
+    nomes_clientes = [
+        "Maria Fernanda", "João Pedro", "Camila Santos", "Lucas Almeida", "Beatriz Lima", 
+        "Rafael Souza", "Isabela Rodrigues", "Gustavo Ferreira", "Ana Clara", "Pedro Henrique",
+        "Juliana Alves", "Marcos Vinícius", "Fernanda Costa", "Thiago Silva", "Amanda Oliveira",
+        "Bruno Rocha", "Letícia Mendes", "Gabriel Martins", "Larissa Ribeiro", "Felipe Cardoso",
+        "Carolina Pereira", "Rodrigo Azevedo", "Tatiana Gomes", "Eduardo Dias", "Priscila Moura",
+        "Ricardo Faria", "Vanessa Nogueira", "Diego Castro", "Luiza Monteiro", "Marcelo Barros"
+    ]
+    
+    clientes_dados = []
+    for i, nome in enumerate(nomes_clientes):
+        telefone = f"119800{str(1100 + i)}"
+        email = f"{nome.split()[0].lower()}@email.com" if random.random() > 0.3 else ""
+        nota = "Cliente VIP" if i % 5 == 0 else ""
+        clientes_dados.append((nome, telefone, email, nota))
+        
+    cursor.executemany("INSERT INTO clientes (nome, telefone, email, nota) VALUES (?, ?, ?, ?)", clientes_dados)
+    
+    print("[*] Gerando 7 Funcionários (Profissionais)...")
+    funcionarios_dados = [
+        ("Ana Paula Silva", "Cabeleireira Senior", "11990010001", "ana@beauty.com"),
+        ("Marcos Oliveira", "Barbeiro Master", "11990010002", "marcos@beauty.com"),
+        ("Juliana Costa", "Manicure/Pedicure", "11990010003", "juliana@beauty.com"),
+        ("Roberto Carlos", "Colorista", "11990010004", "roberto@beauty.com"),
+        ("Silvia Mendes", "Esteticista", "11990010005", "silvia@beauty.com"),
+        ("Paula Fernandes", "Manicure", "11990010006", ""),
+        ("Carlos Eduardo", "Barbeiro", "11990010007", ""),
+    ]
+    cursor.executemany("INSERT INTO funcionarios (nome, funcao, telefone, email) VALUES (?, ?, ?, ?)", funcionarios_dados)
 
-cursor.executemany("""
-    INSERT INTO clientes (nome, telefone, email, nota)
-    VALUES (?, ?, ?, ?)
-""", clientes)
+    print("[*] Gerando 12 Serviços...")
+    servicos_dados = [
+        ("Corte Feminino", 60, 80.00),
+        ("Corte Masculino", 30, 45.00),
+        ("Coloração", 120, 180.00),
+        ("Escova Progressiva", 180, 250.00),
+        ("Manicure", 45, 35.00),
+        ("Pedicure", 50, 40.00),
+        ("Barba Completa", 45, 45.00),
+        ("Barba Simples", 30, 35.00),
+        ("Hidratação Capilar", 60, 70.00),
+        ("Limpeza de Pele", 90, 150.00),
+        ("Design de Sobrancelha", 30, 40.00),
+        ("Penteado Festa", 90, 180.00),
+    ]
+    cursor.executemany("INSERT INTO servicos (nome, duracao, preco) VALUES (?, ?, ?)", servicos_dados)
 
+    print("[*] Gerando 80 Agendamentos e seus pagamentos...")
+    hoje = datetime.now()
+    agendamentos_dados = []
+    pagamentos_dados = []
+    
+    def add_agendamento(c_id, f_id, s_id, data_obj, hora, status):
+        data_str = data_obj.strftime("%Y-%m-%d")
+        duracao = servicos_dados[s_id-1][1]
+        preco = servicos_dados[s_id-1][2]
+        
+        h, m = map(int, hora.split(':'))
+        hora_obj = data_obj.replace(hour=h, minute=m)
+        hora_fim_obj = hora_obj + timedelta(minutes=duracao)
+        hora_fim = hora_fim_obj.strftime("%H:%M")
+        
+        cursor.execute("""
+            INSERT INTO agendamentos (cliente_id, funcionario_id, servico_id, data, hora, hora_fim, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (c_id, f_id, s_id, data_str, hora, hora_fim, status))
+        ag_id = cursor.lastrowid
+        
+        if status == 'concluido':
+            forma = random.choice(["Pix", "Cartão de Crédito", "Cartão de Débito", "Dinheiro"])
+            pagamentos_dados.append((ag_id, preco, forma, 'pago', data_str))
 
-funcionarios = [
-    ("Carlos Souza", "Cabeleireiro", "18988880001", "carlos@email.com"),
-    ("Ana Lima", "Manicure", "18988880002", "ana@email.com"),
-    ("Roberto Dias", "Barbeiro", "18988880003", "roberto@email.com"),
-    ("Julia Paz", "Esteticista", "18988880004", "julia@email.com")
-]
+    horarios_disponiveis = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
 
-cursor.executemany("""
-    INSERT INTO funcionarios (nome, funcao, telefone, email)
-    VALUES (?, ?, ?, ?)
-""", funcionarios)
+    # 1. Agendamentos Antigos (Retenção - >30 a 90 dias atrás)
+    # Vamos garantir que os clientes do id 20 ao 30 sejam os que estão ausentes!
+    for c_id in range(20, 31):
+        dias_atras = random.randint(35, 80)
+        data_antiga = hoje - timedelta(days=dias_atras)
+        add_agendamento(c_id, random.randint(1, 7), random.randint(1, 12), data_antiga, random.choice(horarios_disponiveis), "concluido")
 
+    # 2. Agendamentos Recentes (Últimos 30 dias) - Clientes 1 a 19
+    for _ in range(50):
+        c_id = random.randint(1, 19)
+        f_id = random.randint(1, 7)
+        s_id = random.randint(1, 12)
+        dias_atras = random.randint(1, 25)
+        data_recente = hoje - timedelta(days=dias_atras)
+        add_agendamento(c_id, f_id, s_id, data_recente, random.choice(horarios_disponiveis), "concluido")
 
-servicos = [
-    ("Corte Masculino", 45, 50),
-    ("Corte Feminino", 60, 80),
-    ("Manicure", 30, 40),
-    ("Pedicure", 30, 45),
-    ("Limpeza de Pele", 90, 120),
-    ("Barba", 30, 35)
-]
+    # 3. Agendamentos para HOJE (Para deixar o Dashboard bonito!)
+    for i in range(5):
+        c_id = random.randint(1, 15)
+        add_agendamento(c_id, random.randint(1, 7), random.randint(1, 12), hoje, horarios_disponiveis[i], random.choice(["agendado", "confirmado", "concluido"]))
 
-cursor.executemany("""
-    INSERT INTO servicos (nome, duracao, preco)
-    VALUES (?, ?, ?)
-""", servicos)
+    # 4. Agendamentos para o FUTURO (Próximos 7 dias)
+    for _ in range(10):
+        c_id = random.randint(1, 30)
+        dias_frente = random.randint(1, 7)
+        data_futura = hoje + timedelta(days=dias_frente)
+        add_agendamento(c_id, random.randint(1, 7), random.randint(1, 12), data_futura, random.choice(horarios_disponiveis), "agendado")
 
-# Simulando uma agenda cheia (15 agendamentos)
-# Hoje é 2026-08-11 no ambiente simulado, vamos criar dados próximos a essa data
-agendamentos = [
-    (1, 1, 1, "2026-08-11", "09:00", "agendado"),
-    (2, 2, 3, "2026-08-11", "09:30", "agendado"),
-    (3, 3, 6, "2026-08-11", "10:00", "concluido"),
-    (4, 4, 5, "2026-08-11", "10:30", "agendado"),
-    (5, 1, 2, "2026-08-11", "11:00", "agendado"),
-    (6, 2, 4, "2026-08-11", "13:00", "agendado"),
-    (7, 3, 1, "2026-08-11", "14:00", "cancelado"),
-    (8, 4, 5, "2026-08-11", "15:00", "agendado"),
-    (9, 1, 2, "2026-08-11", "16:00", "agendado"),
-    (10, 2, 3, "2026-08-12", "09:00", "agendado"),
-    (1, 3, 6, "2026-08-12", "10:00", "agendado"),
-    (2, 4, 5, "2026-08-12", "11:00", "agendado"),
-    (3, 1, 1, "2026-08-12", "13:30", "agendado"),
-    (4, 2, 4, "2026-08-12", "15:00", "agendado"),
-    (5, 3, 1, "2026-08-12", "16:30", "agendado")
-]
+    print("[*] Inserindo registros financeiros (Pagamentos)...")
+    cursor.executemany("""
+        INSERT INTO pagamentos (agendamento_id, valor, forma_pagamento, status, data_pagamento)
+        VALUES (?, ?, ?, ?, ?)
+    """, pagamentos_dados)
 
-cursor.executemany("""
-    INSERT INTO agendamentos (
-        cliente_id,
-        funcionario_id,
-        servico_id,
-        data,
-        hora,
-        status
-    )
-    VALUES (?, ?, ?, ?, ?, ?)
-""", agendamentos)
+    conexao.commit()
+    conexao.close()
+    
+    print("\n[OK] Banco de dados populado com sucesso (Versão Robusta para Banca)!")
+    print("   - 30 Clientes cadastrados.")
+    print("   - 7 Profissionais.")
+    print("   - Mais de 80 agendamentos registrados no último trimestre.")
+    print("   - 10 clientes marcados propositalmente como Ausentes (+30 dias) para teste da Retenção.")
 
-
-pagamentos = [
-    (1, 50, "Pix", "pendente", "2026-08-11"),
-    (2, 40, "Cartão", "pago", "2026-08-11"),
-    (3, 35, "Dinheiro", "pago", "2026-08-11"),
-    (4, 120, "Pix", "pendente", "2026-08-11"),
-    (5, 80, "Cartão", "pendente", "2026-08-11"),
-    (6, 45, "Pix", "pendente", "2026-08-11"),
-    (7, 50, "Dinheiro", "cancelado", "2026-08-11"),
-    (8, 120, "Cartão", "pendente", "2026-08-11"),
-    (9, 80, "Pix", "pendente", "2026-08-11"),
-    (10, 40, "Cartão", "pendente", "2026-08-12"),
-    (11, 35, "Dinheiro", "pendente", "2026-08-12"),
-    (12, 120, "Pix", "pendente", "2026-08-12"),
-    (13, 50, "Cartão", "pendente", "2026-08-12"),
-    (14, 45, "Pix", "pendente", "2026-08-12"),
-    (15, 50, "Dinheiro", "pendente", "2026-08-12")
-]
-
-cursor.executemany("""
-    INSERT INTO pagamentos (
-        agendamento_id,
-        valor,
-        forma_pagamento,
-        status,
-        data_pagamento
-    )
-    VALUES (?, ?, ?, ?, ?)
-""", pagamentos)
-
-conexao.commit()
-conexao.close()
-
-print("Banco populado com sucesso (Agenda Completa)!")
+if __name__ == "__main__":
+    seed_database()

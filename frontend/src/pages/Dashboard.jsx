@@ -222,8 +222,74 @@ export default function Dashboard() {
                         </div>
                     )}
                 </div>
-
             </div>
+
+            {/* Retenção de Clientes (Diferencial) - Movido para fora do grid principal, design discreto */}
+            {dados?.ausentes?.length > 0 && (
+                <div style={{ 
+                    marginTop: '2.5rem',
+                    background: 'var(--bg-surface)', 
+                    borderRadius: 'var(--radius-lg)', 
+                    padding: '1.5rem',
+                    boxShadow: 'var(--shadow-sm)',
+                    border: '1px solid var(--border-color)'
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontSize: '1.2rem', color: 'var(--text-main)' }}>
+                            <AlertCircle size={20} className="text-primary" /> Retenção de Clientes
+                        </h2>
+                        <span style={{ fontSize: '0.8rem', background: 'var(--bg-app)', border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '4px 10px', borderRadius: '12px' }}>
+                            {dados.ausentes.length} ausentes
+                        </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+                        {dados.ausentes.map((cliente, index) => {
+                            const telLimpo = cliente.telefone ? cliente.telefone.replace(/\D/g, '') : '';
+                            const msg = encodeURIComponent(`Olá ${cliente.nome.split(' ')[0]}! Sentimos sua falta no BeautyFlow. Que tal agendar um novo horário com a gente para renovar o visual? 💜`);
+                            const linkWhats = `https://wa.me/55${telLimpo}?text=${msg}`;
+                            const dataFormatada = new Date(cliente.ultima_visita).toLocaleDateString('pt-BR');
+
+                            return (
+                                <div key={index} style={{
+                                    background: 'var(--bg-app)',
+                                    padding: '0.75rem 1rem',
+                                    borderRadius: 'var(--radius-md)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    border: '1px solid var(--border-color)'
+                                }}>
+                                    <div>
+                                        <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--text-main)' }}>{cliente.nome}</strong>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Última visita: {dataFormatada}</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => window.open(linkWhats, '_blank')}
+                                        style={{ 
+                                            background: 'transparent',
+                                            color: '#25D366', 
+                                            border: '1px solid #25D366', 
+                                            padding: '6px', 
+                                            borderRadius: '50%', 
+                                            cursor: 'pointer', 
+                                            display: 'flex', 
+                                            justifyContent: 'center', 
+                                            alignItems: 'center',
+                                            transition: 'all 0.2s'
+                                        }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.background = '#25D366'; e.currentTarget.style.color = 'white'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#25D366'; }}
+                                        title="Enviar WhatsApp"
+                                    >
+                                        <MessageCircle size={18} />
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
 
             {modalAberto === 'action' && (
                 <AgendamentoActionModal
