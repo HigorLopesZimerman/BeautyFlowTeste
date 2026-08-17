@@ -1,9 +1,9 @@
-﻿import axios from "axios";
+import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`;
+const apiUrl = import.meta.env.VITE_API_URL || "https://excretory-agonize-plop.ngrok-free.dev";
 
 const api = axios.create({
-    baseURL: apiUrl,
+    baseURL: "https://excretory-agonize-plop.ngrok-free.dev",
     headers: {
         "ngrok-skip-browser-warning": "true"
     }
