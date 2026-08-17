@@ -116,6 +116,11 @@ export default function Login() {
                                 onChange={(e) => setSenha(e.target.value)}
                             />
                         </div>
+                        <div style={{ textAlign: "right", marginTop: "0.5rem" }}>
+                            <Link to="/forgot-password" style={{ color: "var(--primary)", fontSize: "0.85rem", textDecoration: "none" }}>
+                                Esqueci minha senha
+                            </Link>
+                        </div>
                     </div>
 
                     <button

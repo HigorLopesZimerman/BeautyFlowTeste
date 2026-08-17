@@ -10,6 +10,8 @@ import Pagamentos from "./pages/Pagamentos";
 import Relatorios from "./pages/Relatorios";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Componente para proteger rotas
 const PrivateRoute = ({ children }) => {
@@ -21,6 +23,8 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       
       {/* Rotas Protegidas */}
       <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

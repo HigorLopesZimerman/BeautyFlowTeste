@@ -125,3 +125,66 @@ def register():
             "erro": f"Erro ao criar conta: {str(e)}"
         }), 500
 
+@auth_bp.route("/auth/forgot-password", methods=["POST"])
+def forgot_password():
+    dados = request.get_json()
+    email = dados.get("email")
+    
+    if not email:
+        return jsonify({"sucesso": False, "erro": "E-mail é obrigatório."}), 400
+        
+    conexao = conectar()
+    usuario = conexao.execute("SELECT id, nome FROM usuarios WHERE email = ?", (email,)).fetchone()
+    conexao.close()
+    
+    if not usuario:
+        # Por segurança, mesmo se não existir não avisamos que não existe (previne enumeração)
+        return jsonify({"sucesso": True, "mensagem": "Se o e-mail existir, um link de recuperação será gerado."}), 200
+        
+    # Gerar token válido por 15 minutos
+    reset_token = jwt.encode({
+        "usuario_id": usuario["id"],
+        "purpose": "password_reset",
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+    }, SECRET_KEY, algorithm="HS256")
+    
+    # Aqui simularíamos o envio de e-mail. Para MVP, vamos devolver o token na resposta
+    reset_link = f"http://localhost:5173/reset-password?token={reset_token}" # Em prod usaria URL real
+    
+    return jsonify({
+        "sucesso": True,
+        "mensagem": "Link de recuperação gerado com sucesso! (Modo Simulado: veja o token na resposta)",
+        "reset_token": reset_token
+    }), 200
+
+@auth_bp.route("/auth/reset-password", methods=["POST"])
+def reset_password():
+    dados = request.get_json()
+    token = dados.get("token")
+    nova_senha = dados.get("nova_senha")
+    
+    if not token or not nova_senha:
+        return jsonify({"sucesso": False, "erro": "Token e nova senha são obrigatórios."}), 400
+        
+    try:
+        data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        if data.get("purpose") != "password_reset":
+            return jsonify({"sucesso": False, "erro": "Token inválido para esta operação."}), 401
+            
+        usuario_id = data["usuario_id"]
+    except jwt.ExpiredSignatureError:
+        return jsonify({"sucesso": False, "erro": "O link de recuperação expirou. Solicite um novo."}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"sucesso": False, "erro": "Token de recuperação inválido."}), 401
+        
+    # Hash da nova senha
+    senha_hash = generate_password_hash(nova_senha)
+    
+    conexao = conectar()
+    conexao.execute("UPDATE usuarios SET senha = ? WHERE id = ?", (senha_hash, usuario_id))
+    conexao.commit()
+    conexao.close()
+    
+    return jsonify({"sucesso": True, "mensagem": "Senha alterada com sucesso! Você já pode fazer login."}), 200
+
+
