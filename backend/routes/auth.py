@@ -190,7 +190,7 @@ def forgot_password():
         
         return jsonify({
             "sucesso": True,
-            "mensagem": "Um e-mail de recuperação foi enviado para você!"
+            "mensagem": "Um e-mail de recuperação foi enviado para você! (Verifique também sua caixa de Spam/Lixo Eletrônico)"
         }), 200
         
     except Exception as e:
