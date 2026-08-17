@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from database import conectar
+from routes.auth import token_required
 
 agendamentos_bp = Blueprint("agendamentos", __name__)
 
 @agendamentos_bp.route("/agendamentos", methods=["GET"])
-def listar_agendamentos():
+@token_required
+def listar_agendamentos(usuario_id):
     conexao = conectar()
     
     agendamentos = conexao.execute("""
@@ -33,8 +35,10 @@ def listar_agendamentos():
             
         JOIN servicos s
             ON ag.servico_id = s.id
+            
+        WHERE ag.usuario_id = ?
         
-    """).fetchall()
+    """, (usuario_id,)).fetchall()
     
     conexao.close()
     
@@ -42,7 +46,8 @@ def listar_agendamentos():
 
 
 @agendamentos_bp.route("/agendamentos", methods=["POST"])
-def cadastrar_agendamento():
+@token_required
+def cadastrar_agendamento(usuario_id):
     dados = request.get_json()
     
     cliente_id = dados.get("cliente_id")
@@ -61,8 +66,8 @@ def cadastrar_agendamento():
     conexao = conectar()
     
     cliente = conexao.execute(
-        "SELECT id FROM clientes WHERE id = ?",
-        (cliente_id,)
+        "SELECT id FROM clientes WHERE id = ? AND usuario_id = ?",
+        (cliente_id, usuario_id)
     ).fetchone()
     
     if not cliente:
@@ -73,8 +78,8 @@ def cadastrar_agendamento():
         
         
     funcionario = conexao.execute(
-        "SELECT id FROM funcionarios WHERE id = ?",
-        (funcionario_id,)
+        "SELECT id FROM funcionarios WHERE id = ? AND usuario_id = ?",
+        (funcionario_id, usuario_id)
     ).fetchone()
 
     if not funcionario:
@@ -85,8 +90,8 @@ def cadastrar_agendamento():
     
     
     servico = conexao.execute(
-        "SELECT id FROM servicos WHERE id = ?",
-        (servico_id,)
+        "SELECT id FROM servicos WHERE id = ? AND usuario_id = ?",
+        (servico_id, usuario_id)
     ).fetchone()
 
     if not servico:
@@ -102,10 +107,12 @@ def cadastrar_agendamento():
         WHERE funcionario_id = ?
         AND data = ?
         AND hora = ?
+        AND usuario_id = ?
     """, (
         funcionario_id,
         data,
         hora,
+        usuario_id
     )).fetchone()
     
     if agendamento_existente:
@@ -117,6 +124,7 @@ def cadastrar_agendamento():
         
     conexao.execute("""
         INSERT INTO agendamentos (
+            usuario_id,
             cliente_id,
             funcionario_id,
             servico_id,
@@ -125,8 +133,9 @@ def cadastrar_agendamento():
             hora_fim,
             status
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
+        usuario_id,
         cliente_id,
         funcionario_id,
         servico_id,
@@ -145,10 +154,9 @@ def cadastrar_agendamento():
     
     
     
-    
-    
 @agendamentos_bp.route("/agendamentos/<int:id>", methods=["PUT"])
-def editar_agendamento(id):
+@token_required
+def editar_agendamento(usuario_id, id):
     dados = request.get_json()
 
     cliente_id = dados.get("cliente_id")
@@ -173,12 +181,12 @@ def editar_agendamento(id):
 
     conexao = conectar()
 
-    # Verifica se o agendamento existe
+    # Verifica se o agendamento existe e pertence ao usuário
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos
-        WHERE id = ?
-    """, (id,)).fetchone()
+        WHERE id = ? AND usuario_id = ?
+    """, (id, usuario_id)).fetchone()
 
     if not agendamento:
         conexao.close()
@@ -188,8 +196,8 @@ def editar_agendamento(id):
 
     # Verifica se o cliente existe
     cliente = conexao.execute(
-        "SELECT id FROM clientes WHERE id = ?",
-        (cliente_id,)
+        "SELECT id FROM clientes WHERE id = ? AND usuario_id = ?",
+        (cliente_id, usuario_id)
     ).fetchone()
 
     if not cliente:
@@ -200,8 +208,8 @@ def editar_agendamento(id):
 
     # Verifica se o funcionário existe
     funcionario = conexao.execute(
-        "SELECT id FROM funcionarios WHERE id = ?",
-        (funcionario_id,)
+        "SELECT id FROM funcionarios WHERE id = ? AND usuario_id = ?",
+        (funcionario_id, usuario_id)
     ).fetchone()
 
     if not funcionario:
@@ -212,8 +220,8 @@ def editar_agendamento(id):
 
     # Verifica se o serviço existe
     servico = conexao.execute(
-        "SELECT id FROM servicos WHERE id = ?",
-        (servico_id,)
+        "SELECT id FROM servicos WHERE id = ? AND usuario_id = ?",
+        (servico_id, usuario_id)
     ).fetchone()
 
     if not servico:
@@ -230,11 +238,13 @@ def editar_agendamento(id):
         AND data = ?
         AND hora = ?
         AND id != ?
+        AND usuario_id = ?
     """, (
         funcionario_id,
         data,
         hora,
-        id
+        id,
+        usuario_id
     )).fetchone()
 
     if agendamento_existente:
@@ -254,7 +264,7 @@ def editar_agendamento(id):
             hora = ?,
             hora_fim = ?,
             status = ?
-        WHERE id = ?
+        WHERE id = ? AND usuario_id = ?
     """, (
         cliente_id,
         funcionario_id,
@@ -263,7 +273,8 @@ def editar_agendamento(id):
         hora,
         hora_fim,
         status,
-        id
+        id,
+        usuario_id
     ))
 
     conexao.commit()
@@ -275,7 +286,8 @@ def editar_agendamento(id):
 
 
 @agendamentos_bp.route("/agendamentos/<int:id>/status", methods=["PUT"])
-def alterar_status(id):
+@token_required
+def alterar_status(usuario_id, id):
 
     dados = request.get_json()
 
@@ -291,8 +303,8 @@ def alterar_status(id):
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos
-        WHERE id = ?
-    """, (id,)).fetchone()
+        WHERE id = ? AND usuario_id = ?
+    """, (id, usuario_id)).fetchone()
 
     if not agendamento:
         conexao.close()
@@ -303,10 +315,11 @@ def alterar_status(id):
     conexao.execute("""
         UPDATE agendamentos
         SET status = ?
-        WHERE id = ?
+        WHERE id = ? AND usuario_id = ?
     """, (
         status,
-        id
+        id,
+        usuario_id
     ))
 
     conexao.commit()
@@ -319,15 +332,16 @@ def alterar_status(id):
     
     
 @agendamentos_bp.route("/agendamentos/<int:id>", methods=["DELETE"])
-def excluir_agendamento(id):
+@token_required
+def excluir_agendamento(usuario_id, id):
     conexao = conectar()
     
     # Verifica se o agendamento existe
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos
-        WHERE id = ?
-    """, (id,)).fetchone()
+        WHERE id = ? AND usuario_id = ?
+    """, (id, usuario_id)).fetchone()
     
     if not agendamento:
         conexao.close()
@@ -339,8 +353,8 @@ def excluir_agendamento(id):
     # Exclui o agendamento
     conexao.execute("""
         DELETE FROM agendamentos
-        WHERE id = ?
-    """, (id,))
+        WHERE id = ? AND usuario_id = ?
+    """, (id, usuario_id))
     
     conexao.commit()
     conexao.close()

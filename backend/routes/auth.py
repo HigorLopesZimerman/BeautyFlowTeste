@@ -1,8 +1,36 @@
 from flask import Blueprint, jsonify, request
 from database import conectar
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+import datetime
+from functools import wraps
 
 auth_bp = Blueprint("auth", __name__)
+SECRET_KEY = "beautyflow_super_secret"
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if "Authorization" in request.headers:
+            parts = request.headers["Authorization"].split()
+            if len(parts) == 2 and parts[0] == "Bearer":
+                token = parts[1]
+                
+        if not token:
+            return jsonify({"sucesso": False, "erro": "Token ausente."}), 401
+            
+        try:
+            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            usuario_id = data["usuario_id"]
+        except jwt.ExpiredSignatureError:
+            return jsonify({"sucesso": False, "erro": "Token expirado."}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"sucesso": False, "erro": "Token inválido."}), 401
+            
+        return f(usuario_id, *args, **kwargs)
+        
+    return decorated
 
 @auth_bp.route("/auth/login", methods=["POST"])
 def login():
@@ -18,18 +46,24 @@ def login():
 
     conexao = conectar()
     usuario = conexao.execute("""
-        SELECT nome, email, senha
+        SELECT id, nome, email, senha
         FROM usuarios
         WHERE email = ?
     """, (email,)).fetchone()
     conexao.close()
     
     if usuario and check_password_hash(usuario["senha"], senha):
+        token = jwt.encode({
+            "usuario_id": usuario["id"],
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, SECRET_KEY, algorithm="HS256")
+        
         return jsonify({
             "sucesso": True,
             "mensagem": "Login realizado com sucesso!",
-            "token": f"fake-jwt-token-{usuario['email']}",
+            "token": token,
             "usuario": {
+                "id": usuario["id"],
                 "nome": usuario["nome"],
                 "email": usuario["email"]
             }

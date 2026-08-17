@@ -1,44 +1,46 @@
 from flask import Blueprint, jsonify, request
 from database import conectar
+from routes.auth import token_required
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
 @dashboard_bp.route("/dashboard", methods=["GET"])
-def dashboard():
+@token_required
+def dashboard(usuario_id):
     
     conexao = conectar()
     
     total_clientes = conexao.execute("""
         SELECT COUNT(*)
-        FROM clientes
-    """).fetchone()[0]
+        FROM clientes WHERE usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     total_funcionarios = conexao.execute("""
     SELECT COUNT(*)
-    FROM funcionarios
-    """).fetchone()[0]
+    FROM funcionarios WHERE usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     total_servicos = conexao.execute("""
     SELECT COUNT(*)
-    FROM servicos
-    """).fetchone()[0]
+    FROM servicos WHERE usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     total_agendamentos = conexao.execute("""
     SELECT COUNT(*)
-    FROM agendamentos
-    """).fetchone()[0]
+    FROM agendamentos WHERE usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     total_pagamentos = conexao.execute("""
     SELECT COUNT(*)
-    FROM pagamentos
-    """).fetchone()[0]
+    FROM pagamentos WHERE usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     faturamento = conexao.execute("""
         SELECT SUM(valor)
         FROM pagamentos
-        WHERE LOWER(status) = 'pago'
-        """).fetchone()[0]
+        WHERE LOWER(status) = 'pago' AND usuario_id = ?
+        """, (usuario_id,)).fetchone()[0]
     if faturamento is None:
         faturamento = 0
 
@@ -62,24 +64,24 @@ def dashboard():
         JOIN servicos s
             ON a.servico_id = s.id
 
-        WHERE a.data = DATE('now')
+        WHERE a.data = DATE('now') AND a.usuario_id = ?
 
         ORDER BY a.hora
-    """).fetchall()      
+    """, (usuario_id,)).fetchall()      
     
     
     pagamentos_pendentes = conexao.execute("""
         SELECT COUNT(*)
         FROM pagamentos
-        WHERE LOWER(status) = 'pendente'
-    """).fetchone()[0]
+        WHERE LOWER(status) = 'pendente' AND usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
     
     
     valor_pendente = conexao.execute("""
         SELECT SUM(valor)
         FROM pagamentos
-        WHERE LOWER(status) = 'pendente'
-    """).fetchone()[0]
+        WHERE LOWER(status) = 'pendente' AND usuario_id = ?
+    """, (usuario_id,)).fetchone()[0]
 
     if valor_pendente is None:
         valor_pendente = 0
@@ -105,12 +107,12 @@ def dashboard():
         JOIN servicos s
             ON a.servico_id = s.id
 
-        WHERE a.status = 'agendado'
+        WHERE a.status = 'agendado' AND a.usuario_id = ?
 
         ORDER BY a.data, a.hora
 
         LIMIT 1
-    """).fetchone()
+    """, (usuario_id,)).fetchone()
     
         
     conexao.close()
@@ -137,7 +139,8 @@ def dashboard():
     
 
 @dashboard_bp.route("/dashboard/pagamentos-pendentes", methods=["GET"])
-def pagamentos_pendentes():
+@token_required
+def pagamentos_pendentes(usuario_id):
 
     conexao = conectar()
     
@@ -162,14 +165,10 @@ def pagamentos_pendentes():
         JOIN servicos s
             ON a.servico_id = s.id
             
-        WHERE LOWER(p.status) = 'pendente'
+        WHERE LOWER(p.status) = 'pendente' AND p.usuario_id = ?
         
         ORDER BY p.data_pagamento
-    """).fetchall()
-    
-    
-    
-    
+    """, (usuario_id,)).fetchall()
     
     conexao.close()
     
@@ -180,7 +179,8 @@ def pagamentos_pendentes():
     
     
 @dashboard_bp.route("/dashboard/faturamento", methods = ["GET"])
-def faturamento_periodo():
+@token_required
+def faturamento_periodo(usuario_id):
     
     inicio = request.args.get("inicio")
     fim = request.args.get("fim")
@@ -200,9 +200,11 @@ def faturamento_periodo():
         FROM pagamentos
         WHERE status = 'pago'
         AND data_pagamento BETWEEN ? AND ?
+        AND usuario_id = ?
     """, (
         inicio,
-        fim
+        fim,
+        usuario_id
     )).fetchone()[0]    
     
     

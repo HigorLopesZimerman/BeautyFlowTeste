@@ -1,14 +1,17 @@
 from flask import Blueprint, request, jsonify
 from database import conectar
+from routes.auth import token_required
 
 servicos_bp = Blueprint("servicos", __name__)
 
 @servicos_bp.route("/servicos", methods=["GET"])
-def listar_servicos():
+@token_required
+def listar_servicos(usuario_id):
     conexao = conectar()
     
     servicos = conexao.execute(
-        "SELECT * FROM servicos"
+        "SELECT * FROM servicos WHERE usuario_id = ?",
+        (usuario_id,)
     ).fetchall()
     
     conexao.close()
@@ -16,7 +19,8 @@ def listar_servicos():
     return jsonify([dict(servico) for servico in servicos])
 
 @servicos_bp.route("/servicos", methods=["POST"])
-def cadastrar_servico():
+@token_required
+def cadastrar_servico(usuario_id):
     dados = request.get_json()
     
     nome = dados.get("nome")
@@ -34,10 +38,10 @@ def cadastrar_servico():
     
     cursor.execute(
         """
-        INSERT INTO servicos (nome, duracao, preco)
-        VALUES (?, ?, ?)
+        INSERT INTO servicos (usuario_id, nome, duracao, preco)
+        VALUES (?, ?, ?, ?)
         """,
-        (nome, duracao, preco)
+        (usuario_id, nome, duracao, preco)
     )
     
     conexao.commit()
@@ -50,7 +54,8 @@ def cadastrar_servico():
     }), 201
     
 @servicos_bp.route("/servicos/<int:id>", methods=["PUT"])
-def editar_servico(id):
+@token_required
+def editar_servico(usuario_id, id):
     dados = request.get_json()
     
     nome = dados.get("nome")
@@ -69,9 +74,9 @@ def editar_servico(id):
         """
         UPDATE servicos
         SET nome = ?, duracao = ?, preco = ? 
-        WHERE id = ?
+        WHERE id = ? AND usuario_id = ?
         """,
-        (nome, duracao, preco, id)
+        (nome, duracao, preco, id, usuario_id)
     )
     
     conexao.commit()
@@ -82,13 +87,14 @@ def editar_servico(id):
     }), 200
     
 @servicos_bp.route("/servicos/<int:id>", methods=["DELETE"])
-def excluir_servico(id):
+@token_required
+def excluir_servico(usuario_id, id):
     conexao = conectar()
     cursor = conexao.cursor()
     
     cursor.execute(
-        "DELETE FROM servicos WHERE id = ?",
-        (id,)
+        "DELETE FROM servicos WHERE id = ? AND usuario_id = ?",
+        (id, usuario_id)
     )
     
     conexao.commit()

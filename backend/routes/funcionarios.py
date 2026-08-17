@@ -1,14 +1,17 @@
 from flask import Blueprint, request, jsonify
 from database import conectar
+from routes.auth import token_required
 
 funcionarios_bp = Blueprint("funcionarios", __name__)
 
 @funcionarios_bp.route("/funcionarios", methods=["GET"])
-def listar_funcionarios():
+@token_required
+def listar_funcionarios(usuario_id):
     conexao = conectar()
 
     funcionarios = conexao.execute(
-        "SELECT * FROM funcionarios"
+        "SELECT * FROM funcionarios WHERE usuario_id = ?",
+        (usuario_id,)
     ).fetchall()
 
     conexao.close()
@@ -17,7 +20,8 @@ def listar_funcionarios():
 
 
 @funcionarios_bp.route("/funcionarios", methods=["POST"])
-def cadastrar_funcionario():
+@token_required
+def cadastrar_funcionario(usuario_id):
     dados = request.get_json()
 
     nome = dados.get("nome")
@@ -35,10 +39,10 @@ def cadastrar_funcionario():
 
     cursor.execute(
         """
-        INSERT INTO funcionarios (nome, funcao, telefone, email)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO funcionarios (usuario_id, nome, funcao, telefone, email)
+        VALUES (?, ?, ?, ?, ?)
         """,
-        (nome, funcao, telefone, email)
+        (usuario_id, nome, funcao, telefone, email)
     )
 
     conexao.commit()
@@ -52,7 +56,8 @@ def cadastrar_funcionario():
     
     
 @funcionarios_bp.route("/funcionarios/<int:id>", methods=["PUT"])
-def editar_funcionario(id):
+@token_required
+def editar_funcionario(usuario_id, id):
     dados = request.get_json()
 
     nome = dados.get("nome")
@@ -71,9 +76,9 @@ def editar_funcionario(id):
         """
         UPDATE funcionarios
         SET nome = ?, funcao = ?, telefone = ?, email = ?
-        WHERE id = ?
+        WHERE id = ? AND usuario_id = ?
         """,
-        (nome, funcao, telefone, email, id)
+        (nome, funcao, telefone, email, id, usuario_id)
     )
 
     conexao.commit()
@@ -84,12 +89,13 @@ def editar_funcionario(id):
     })
     
 @funcionarios_bp.route("/funcionarios/<int:id>", methods=["DELETE"])
-def excluir_funcionario(id):
+@token_required
+def excluir_funcionario(usuario_id, id):
     conexao = conectar()
 
     conexao.execute(
-        "DELETE FROM funcionarios WHERE id = ?",
-        (id,)
+        "DELETE FROM funcionarios WHERE id = ? AND usuario_id = ?",
+        (id, usuario_id)
     )
 
     conexao.commit()
