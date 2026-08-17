@@ -1,39 +1,21 @@
-const API_URL = `http://${window.location.hostname}:5000`;
+import api from './api';
 
 export const login = async (email, senha) => {
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, senha }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.erro || "Erro ao fazer login");
+    try {
+        const response = await api.post('/auth/login', { email, senha });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.erro || "Erro ao fazer login");
     }
-
-    return data;
 };
 
 export const register = async (nome, email, senha) => {
-    const response = await fetch(`${API_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ nome, email, senha }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.erro || "Erro ao cadastrar conta");
+    try {
+        const response = await api.post('/auth/register', { nome, email, senha });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.erro || "Erro ao cadastrar conta");
     }
-
-    return data;
 };
 
 export const logout = () => {
