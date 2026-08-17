@@ -136,10 +136,6 @@ export default function Login() {
                     </Link>
                 </div>
 
-                <div style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.85rem", opacity: 0.8 }}>
-                    Para testar o MVP, use:<br />
-                    <strong>admin@beautyflow.com</strong> / <strong>admin123</strong>
-                </div>
             </div>
         </div>
     );
