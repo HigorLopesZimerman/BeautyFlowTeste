@@ -7,21 +7,16 @@ function ForgotPassword() {
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState("");
     const [sucesso, setSucesso] = useState("");
-    const [tokenSimulado, setTokenSimulado] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErro("");
         setSucesso("");
-        setTokenSimulado("");
         setLoading(true);
 
         try {
             const resposta = await api.post("/auth/forgot-password", { email });
             setSucesso(resposta.data.mensagem);
-            if (resposta.data.reset_token) {
-                setTokenSimulado(resposta.data.reset_token);
-            }
         } catch (err) {
             setErro(err.response?.data?.erro || "Erro ao conectar com o servidor.");
         } finally {
@@ -110,16 +105,6 @@ function ForgotPassword() {
                         {loading ? "Enviando..." : "Enviar link de recuperação"}
                     </button>
                 </form>
-
-                {tokenSimulado && (
-                    <div style={{ marginTop: "1.5rem", padding: "1rem", border: "1px dashed var(--primary)", borderRadius: "0.5rem", textAlign: "left", fontSize: "0.85rem", backgroundColor: "var(--background)" }}>
-                        <strong style={{ color: "var(--primary)" }}>[MODO MVP] E-mail simulado:</strong><br/><br/>
-                        Clique no link abaixo para recuperar (ou copie a URL):<br/>
-                        <Link to={`/reset-password?token=${tokenSimulado}`} style={{ color: "var(--primary)", wordBreak: "break-all" }}>
-                            /reset-password?token={tokenSimulado}
-                        </Link>
-                    </div>
-                )}
 
                 <div style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.9rem" }}>
                     Lembrou a senha?{" "}

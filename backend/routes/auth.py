@@ -148,14 +148,57 @@ def forgot_password():
         "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
     }, SECRET_KEY, algorithm="HS256")
     
-    # Aqui simularíamos o envio de e-mail. Para MVP, vamos devolver o token na resposta
-    reset_link = f"http://localhost:5173/reset-password?token={reset_token}" # Em prod usaria URL real
-    
-    return jsonify({
-        "sucesso": True,
-        "mensagem": "Link de recuperação gerado com sucesso! (Modo Simulado: veja o token na resposta)",
-        "reset_token": reset_token
-    }), 200
+    # Enviar o e-mail real usando SMTP do Gmail
+    try:
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+
+        # Como a aplicação está na Vercel e o backend no ngrok/local, precisamos de uma URL dinâmica
+        # Por enquanto usaremos a URL da Vercel ou localhost, dependendo do header origin
+        origin = request.headers.get("Origin", "https://beautyflow.vercel.app")
+        reset_link = f"{origin}/reset-password?token={reset_token}"
+        
+        remetente = "atendimentobeautyflow@gmail.com"
+        senha_app = "kwny girv fvjz wqza"
+        
+        msg = MIMEMultipart()
+        msg["From"] = f"BeautyFlow <{remetente}>"
+        msg["To"] = email
+        msg["Subject"] = "Recuperação de Senha - BeautyFlow"
+        
+        corpo = f"""
+        Olá {usuario['nome']},
+        
+        Você solicitou a recuperação da sua senha no BeautyFlow.
+        Clique no link abaixo para criar uma nova senha (este link expira em 15 minutos):
+        
+        {reset_link}
+        
+        Se você não solicitou isso, pode ignorar este e-mail com segurança.
+        
+        Atenciosamente,
+        Equipe BeautyFlow
+        """
+        msg.attach(MIMEText(corpo, "plain"))
+        
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(remetente, senha_app)
+        server.send_message(msg)
+        server.quit()
+        
+        return jsonify({
+            "sucesso": True,
+            "mensagem": "Um e-mail de recuperação foi enviado para você!"
+        }), 200
+        
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
+        return jsonify({
+            "sucesso": False,
+            "erro": "Não foi possível enviar o e-mail no momento. Tente novamente mais tarde."
+        }), 500
 
 @auth_bp.route("/auth/reset-password", methods=["POST"])
 def reset_password():
