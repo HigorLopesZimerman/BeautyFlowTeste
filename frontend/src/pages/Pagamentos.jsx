@@ -46,13 +46,7 @@ export default function Pagamentos() {
 
     return (
         <Layout>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h1 style={{ margin: 0 }}>Pagamentos</h1>
-                <button className="btn btn-primary" onClick={() => handleOpenModal()}>
-                    <Plus size={20} />
-                    Novo Pagamento
-                </button>
-            </div>
+
 
             <div style={{ position: 'relative', marginBottom: '1.5rem', maxWidth: '400px' }}>
                 <Search size={20} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-muted)' }} />
@@ -100,15 +94,15 @@ export default function Pagamentos() {
                                 </td>
                                 <td>
                                     <div className="actions-cell">
-                                        <button 
-                                            className="icon-btn" 
+                                        <button
+                                            className="icon-btn"
                                             title="Editar"
                                             onClick={() => handleOpenModal(pagamento)}
                                         >
                                             <Edit2 size={18} />
                                         </button>
-                                        <button 
-                                            className="icon-btn danger" 
+                                        <button
+                                            className="icon-btn danger"
                                             title="Excluir"
                                             onClick={() => excluirPagamento(pagamento.id)}
                                         >
@@ -129,13 +123,13 @@ export default function Pagamentos() {
                 </table>
             </div>
 
-            <Modal 
-                isOpen={isModalOpen} 
+            <Modal
+                isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={pagamentoEditando ? "Editar Pagamento" : "Novo Pagamento"}
             >
                 <form onSubmit={handleSave}>
-                    
+
                     <div className="form-group">
                         <label>Agendamento vinculado *</label>
                         <select

@@ -26,6 +26,7 @@ export default function Agendamentos() {
     } = useAgendamentos();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [erroAPI, setErroAPI] = useState("");
     const [historicoCliente, setHistoricoCliente] = useState(null);
 
     // Efeito para carregar o histórico do cliente (Prontuário)
@@ -43,7 +44,7 @@ export default function Agendamentos() {
     useEffect(() => {
         if (hora && servicoId) {
             const servico = servicos.find(s => s.id === parseInt(servicoId));
-            if (servico && servico.duracao && !agendamentoEditando) {
+            if (servico && servico.duracao) {
                 const [h, m] = hora.split(':').map(Number);
                 let newM = m + servico.duracao;
                 let newH = h + Math.floor(newM / 60);
@@ -56,6 +57,7 @@ export default function Agendamentos() {
     }, [hora, servicoId, agendamentoEditando, servicos, setHoraFim]);
 
     const handleOpenModal = (agendamento = null) => {
+        setErroAPI("");
         if (agendamento) {
             editarAgendamento(agendamento);
         } else {
@@ -71,8 +73,13 @@ export default function Agendamentos() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        await cadastrarAgendamento();
-        setIsModalOpen(false);
+        setErroAPI("");
+        const resultado = await cadastrarAgendamento();
+        if (resultado.success) {
+            setIsModalOpen(false);
+        } else {
+            setErroAPI(resultado.error);
+        }
     };
 
     // Função auxiliar para renderizar a badge de status corretamente
@@ -227,6 +234,26 @@ export default function Agendamentos() {
                 onClose={() => setIsModalOpen(false)}
                 title={agendamentoEditando ? "Editar Agendamento" : "Novo Agendamento"}
             >
+                {erroAPI && (
+                    <div style={{
+                        backgroundColor: '#fee2e2',
+                        color: '#991b1b',
+                        padding: '12px 16px',
+                        borderRadius: '8px',
+                        marginBottom: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        fontSize: '0.95rem',
+                        border: '1px solid #f87171'
+                    }}>
+                        <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+                        <div>
+                            <strong>Não foi possível agendar:</strong><br/>
+                            {erroAPI}
+                        </div>
+                    </div>
+                )}
                 <form onSubmit={handleSave}>
                     
                     <div className="form-group">

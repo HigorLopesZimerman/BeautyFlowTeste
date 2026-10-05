@@ -52,9 +52,8 @@ export function useAgendamentos() {
     }
 
     async function cadastrarAgendamento() {
-        if (!clienteId || !funcionarioId || !servicoId || !data || !hora) {
-            alert("Preencha todos os campos.");
-            return;
+        if (!clienteId || !funcionarioId || !servicoId || !data || !hora || !horaFim) {
+            return { success: false, error: "Preencha todos os campos e aguarde o cálculo do horário de término." };
         }
 
         try {
@@ -89,8 +88,10 @@ export function useAgendamentos() {
             setHoraFim("");
             setStatus("agendado");
             carregarAgendamentos();
+            return { success: true };
         } catch (erro) {
             console.error(erro);
+            return { success: false, error: erro.response?.data?.erro || "Erro ao salvar agendamento." };
         }
     }
 

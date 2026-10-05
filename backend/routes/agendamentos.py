@@ -23,6 +23,7 @@ def listar_agendamentos(usuario_id):
              
              ag.data,
              ag.hora,
+             ag.hora_fim,
              ag.status
         
         FROM agendamentos ag
@@ -58,9 +59,9 @@ def cadastrar_agendamento(usuario_id):
     hora_fim = dados.get("hora_fim")
     status = dados.get("status", "agendado")
     
-    if not all([cliente_id, funcionario_id, servico_id, data, hora]):
+    if not all([cliente_id, funcionario_id, servico_id, data, hora, hora_fim]):
         return jsonify({
-            "erro": "Todos os campos são obrigatórios."
+            "erro": "Todos os campos (incluindo horário de término) são obrigatórios."
         }), 400
         
     conexao = conectar()
@@ -106,11 +107,13 @@ def cadastrar_agendamento(usuario_id):
         FROM agendamentos
         WHERE funcionario_id = ?
         AND data = ?
-        AND hora = ?
+        AND (hora < ? AND hora_fim > ?)
+        AND status != 'cancelado'
         AND usuario_id = ?
     """, (
         funcionario_id,
         data,
+        hora_fim,
         hora,
         usuario_id
     )).fetchone()
@@ -173,10 +176,11 @@ def editar_agendamento(usuario_id, id):
         servico_id,
         data,
         hora,
+        hora_fim,
         status
     ]):
         return jsonify({
-            "erro": "Todos os campos são obrigatórios."
+            "erro": "Todos os campos (incluindo horário de término) são obrigatórios."
         }), 400
 
     conexao = conectar()
@@ -236,12 +240,14 @@ def editar_agendamento(usuario_id, id):
         FROM agendamentos
         WHERE funcionario_id = ?
         AND data = ?
-        AND hora = ?
+        AND (hora < ? AND hora_fim > ?)
         AND id != ?
+        AND status != 'cancelado'
         AND usuario_id = ?
     """, (
         funcionario_id,
         data,
+        hora_fim,
         hora,
         id,
         usuario_id
