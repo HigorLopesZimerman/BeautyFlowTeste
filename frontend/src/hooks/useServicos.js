@@ -24,8 +24,7 @@ export function useServicos() {
 
     async function cadastrarServico() {
         if (!nome || !duracao || !preco) {
-            alert("Preencha todos os campos.");
-            return;
+            return { success: false, error: "Preencha todos os campos obrigatórios." };
         }
 
         try {
@@ -40,15 +39,14 @@ export function useServicos() {
             setDuracao("");
             setPreco("");
             carregarServicos();
+            return { success: true };
         } catch (erro) {
             console.error(erro);
+            return { success: false, error: "Erro ao salvar serviço." };
         }
     }
 
     async function excluirServico(id) {
-        const confirmar = window.confirm("Deseja realmente excluir este serviço?");
-        if (!confirmar) return;
-
         try {
             await deleteServico(id);
             carregarServicos();

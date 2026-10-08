@@ -21,10 +21,10 @@ export function useRelatorios() {
 
     async function consultarPeriodo() {
         if (!inicio || !fim) {
-            alert("Selecione as duas datas.");
-            return;
+            return { success: false, error: "Selecione as duas datas." };
         }
         await carregarRelatorios(inicio, fim);
+        return { success: true };
     }
 
     return {

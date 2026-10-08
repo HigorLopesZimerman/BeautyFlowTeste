@@ -1,8 +1,10 @@
 import { useRelatorios } from "../hooks/useRelatorios";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
+import ErrorAlert from "../components/ErrorAlert";
 import { formatCurrency } from "../utils/masks";
 import { TrendingUp, Calendar, XCircle, CreditCard, DollarSign, Scissors, User, Briefcase } from "lucide-react";
+import { useState } from "react";
 
 export default function Relatorios() {
     const {
@@ -12,6 +14,16 @@ export default function Relatorios() {
         consultarPeriodo,
         limparFiltro
     } = useRelatorios();
+
+    const [erroAPI, setErroAPI] = useState("");
+
+    const handleConsultar = async () => {
+        setErroAPI("");
+        const resultado = await consultarPeriodo();
+        if (resultado?.error) {
+            setErroAPI(resultado.error);
+        }
+    };
 
     if (!dados) {
         return (
@@ -38,6 +50,7 @@ export default function Relatorios() {
                 border: '1px solid var(--border-color)'
             }}>
                 <h3 style={{ margin: '0 0 1rem 0' }}>Filtrar Período</h3>
+                <ErrorAlert message={erroAPI} />
                 <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "flex-end" }}>
                     <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
                         <label>Data Início</label>
@@ -58,10 +71,13 @@ export default function Relatorios() {
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button className="btn btn-primary" onClick={consultarPeriodo} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
+                        <button className="btn btn-primary" onClick={handleConsultar} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
                             Filtrar
                         </button>
-                        <button className="btn" onClick={limparFiltro} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
+                        <button className="btn" onClick={() => {
+                            setErroAPI("");
+                            limparFiltro();
+                        }} style={{ padding: '0.8rem 1.5rem', height: 'max-content' }}>
                             Limpar
                         </button>
                     </div>

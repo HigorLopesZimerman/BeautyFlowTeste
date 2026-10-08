@@ -3,6 +3,8 @@ import { useClientes } from "../hooks/useClientes";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import ConfirmModal from "../components/ConfirmModal";
+import ErrorAlert from "../components/ErrorAlert";
 import { formatPhone } from "../utils/masks";
 
 export default function Clientes() {
@@ -20,8 +22,12 @@ export default function Clientes() {
     } = useClientes();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [erroAPI, setErroAPI] = useState("");
 
     const handleOpenModal = (cliente = null) => {
+        setErroAPI("");
         if (cliente) {
             editarCliente(cliente);
         } else {
@@ -37,8 +43,13 @@ export default function Clientes() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        await cadastrarCliente();
-        setIsModalOpen(false);
+        setErroAPI("");
+        const resultado = await cadastrarCliente();
+        if (resultado?.success) {
+            setIsModalOpen(false);
+        } else {
+            setErroAPI(resultado?.error || "Erro ao salvar.");
+        }
     };
 
     return (
@@ -95,9 +106,8 @@ export default function Clientes() {
                                             className="icon-btn danger" 
                                             title="Excluir"
                                             onClick={() => {
-                                                if(window.confirm("Deseja realmente excluir este cliente?")) {
-                                                    excluirCliente(cliente.id);
-                                                }
+                                                setItemToDelete(cliente.id);
+                                                setIsConfirmOpen(true);
                                             }}
                                         >
                                             <Trash2 size={18} />
@@ -122,6 +132,7 @@ export default function Clientes() {
                 onClose={() => setIsModalOpen(false)}
                 title={clienteEditando ? "Editar Cliente" : "Novo Cliente"}
             >
+                <ErrorAlert message={erroAPI} />
                 <form onSubmit={handleSave}>
                     <div className="form-group">
                         <label>Nome Completo *</label>
@@ -179,6 +190,14 @@ export default function Clientes() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => excluirCliente(itemToDelete)}
+                title="Excluir Cliente"
+                message="Deseja realmente excluir este cliente? Esta ação não pode ser desfeita."
+            />
 
         </Layout>
     );

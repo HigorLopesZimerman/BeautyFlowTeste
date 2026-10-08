@@ -3,6 +3,8 @@ import { useFuncionarios } from "../hooks/useFuncionarios";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import ConfirmModal from "../components/ConfirmModal";
+import ErrorAlert from "../components/ErrorAlert";
 import { formatPhone } from "../utils/masks";
 
 export default function Funcionarios() {
@@ -20,8 +22,12 @@ export default function Funcionarios() {
     } = useFuncionarios();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [erroAPI, setErroAPI] = useState("");
 
     const handleOpenModal = (funcionario = null) => {
+        setErroAPI("");
         if (funcionario) {
             editarFuncionario(funcionario);
         } else {
@@ -36,8 +42,13 @@ export default function Funcionarios() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        await cadastrarFuncionario();
-        setIsModalOpen(false);
+        setErroAPI("");
+        const resultado = await cadastrarFuncionario();
+        if (resultado?.success) {
+            setIsModalOpen(false);
+        } else {
+            setErroAPI(resultado?.error || "Erro ao salvar.");
+        }
     };
 
     return (
@@ -92,9 +103,8 @@ export default function Funcionarios() {
                                             className="icon-btn danger" 
                                             title="Excluir"
                                             onClick={() => {
-                                                if(window.confirm("Deseja realmente excluir este funcionário?")) {
-                                                    excluirFuncionario(funcionario.id);
-                                                }
+                                                setItemToDelete(funcionario.id);
+                                                setIsConfirmOpen(true);
                                             }}
                                         >
                                             <Trash2 size={18} />
@@ -119,6 +129,7 @@ export default function Funcionarios() {
                 onClose={() => setIsModalOpen(false)}
                 title={funcionarioEditando ? "Editar Funcionário" : "Novo Funcionário"}
             >
+                <ErrorAlert message={erroAPI} />
                 <form onSubmit={handleSave}>
                     <div className="form-group">
                         <label>Nome Completo</label>
@@ -177,6 +188,14 @@ export default function Funcionarios() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => excluirFuncionario(itemToDelete)}
+                title="Excluir Funcionário"
+                message="Deseja realmente excluir este funcionário? Esta ação não pode ser desfeita."
+            />
 
         </Layout>
     );

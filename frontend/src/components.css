@@ -115,3 +115,50 @@
 .icon-btn.danger:hover {
   color: var(--danger);
 }
+
+/* Status Select - indicadores visuais por cor */
+.status-select {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.status-select:focus {
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Agendamento statuses */
+.status-select.status-agendado {
+  border-left-color: var(--warning);
+  background-color: var(--warning-bg);
+}
+.status-select.status-confirmado {
+  border-left-color: var(--primary);
+  background-color: var(--primary-light);
+}
+.status-select.status-concluido {
+  border-left-color: var(--success);
+  background-color: var(--success-bg);
+}
+.status-select.status-cancelado {
+  border-left-color: var(--danger);
+  background-color: var(--danger-bg);
+}
+
+/* Pagamento statuses */
+.status-select.status-pendente {
+  border-left-color: var(--warning);
+  background-color: var(--warning-bg);
+}
+.status-select.status-pago {
+  border-left-color: var(--success);
+  background-color: var(--success-bg);
+}

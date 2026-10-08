@@ -2,11 +2,12 @@ import { useDashboard } from "../hooks/useDashboard";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 import { formatCurrency } from "../utils/masks";
-import { Calendar, Clock, User, Scissors, MessageCircle, DollarSign, AlertCircle, CreditCard, Users, FileText, AlertTriangle } from "lucide-react";
+import { Calendar, Clock, User, Scissors, MessageCircle, DollarSign, AlertCircle, CreditCard, Users, FileText, AlertTriangle, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import AgendamentoActionModal from "../components/AgendamentoActionModal";
 import ComandaModal from "../components/ComandaModal";
 import PagamentoModal from "../components/PagamentoModal";
+import ErrorAlert from "../components/ErrorAlert";
 import { updateAgendamentoStatus } from "../services/agendamentoService";
 import { createPagamento } from "../services/pagamentoService";
 
@@ -16,6 +17,8 @@ export default function Dashboard() {
     const [selectedAgendamento, setSelectedAgendamento] = useState(null);
     const [modalAberto, setModalAberto] = useState(null); // 'action', 'comanda', 'pagamento'
     const [comandaDados, setComandaDados] = useState(null);
+    const [erroAPI, setErroAPI] = useState("");
+    const [successAPI, setSuccessAPI] = useState("");
 
     if (carregando) {
         return (
@@ -52,11 +55,13 @@ export default function Dashboard() {
 
     const handleStatusChange = async (novoStatus) => {
         try {
+            setErroAPI("");
+            setSuccessAPI("");
             await updateAgendamentoStatus(selectedAgendamento.id, novoStatus);
             setModalAberto(null);
             recarregarDashboard();
         } catch (error) {
-            alert("Erro ao atualizar status.");
+            setErroAPI("Erro ao atualizar status.");
         }
     };
 
@@ -67,6 +72,8 @@ export default function Dashboard() {
 
     const handleConfirmarPagamento = async (formaPagamento) => {
         try {
+            setErroAPI("");
+            setSuccessAPI("");
             // 1. Criar o pagamento
             const hoje = new Date().toISOString().split('T')[0];
             await createPagamento({
@@ -82,15 +89,37 @@ export default function Dashboard() {
 
             setModalAberto(null);
             recarregarDashboard();
-            alert("Comanda fechada com sucesso!");
+            setSuccessAPI("Comanda fechada com sucesso!");
         } catch (error) {
-            alert("Erro ao fechar comanda.");
+            setErroAPI("Erro ao fechar comanda.");
         }
     };
 
     return (
         <Layout>
             <h1 style={{ margin: '0 0 2rem 0' }}>Dashboard Geral</h1>
+            
+            <ErrorAlert message={erroAPI} />
+            {successAPI && (
+                <div style={{
+                    backgroundColor: '#dcfce7',
+                    color: '#166534',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    marginBottom: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '0.95rem',
+                    border: '1px solid #22c55e'
+                }}>
+                    <CheckCircle size={20} />
+                    <div>
+                        <strong>Sucesso:</strong><br/>
+                        {successAPI}
+                    </div>
+                </div>
+            )}
 
             <div style={{ 
                 display: "grid", 

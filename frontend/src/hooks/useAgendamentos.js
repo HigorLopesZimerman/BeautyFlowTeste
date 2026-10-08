@@ -96,9 +96,6 @@ export function useAgendamentos() {
     }
 
     async function excluirAgendamento(id) {
-        const confirmar = window.confirm("Deseja realmente excluir este agendamento?");
-        if (!confirmar) return;
-
         try {
             await deleteAgendamento(id);
             carregarAgendamentos();

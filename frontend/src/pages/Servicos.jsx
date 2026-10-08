@@ -3,6 +3,8 @@ import { useServicos } from "../hooks/useServicos";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import ConfirmModal from "../components/ConfirmModal";
+import ErrorAlert from "../components/ErrorAlert";
 
 export default function Servicos() {
     const {
@@ -18,8 +20,12 @@ export default function Servicos() {
     } = useServicos();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [erroAPI, setErroAPI] = useState("");
 
     const handleOpenModal = (servico = null) => {
+        setErroAPI("");
         if (servico) {
             editarServico(servico);
         } else {
@@ -33,8 +39,13 @@ export default function Servicos() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        await cadastrarServico();
-        setIsModalOpen(false);
+        setErroAPI("");
+        const resultado = await cadastrarServico();
+        if (resultado?.success) {
+            setIsModalOpen(false);
+        } else {
+            setErroAPI(resultado?.error || "Erro ao salvar.");
+        }
     };
 
     return (
@@ -89,9 +100,8 @@ export default function Servicos() {
                                             className="icon-btn danger" 
                                             title="Excluir"
                                             onClick={() => {
-                                                if(window.confirm("Deseja realmente excluir este serviço?")) {
-                                                    excluirServico(servico.id);
-                                                }
+                                                setItemToDelete(servico.id);
+                                                setIsConfirmOpen(true);
                                             }}
                                         >
                                             <Trash2 size={18} />
@@ -116,6 +126,7 @@ export default function Servicos() {
                 onClose={() => setIsModalOpen(false)}
                 title={servicoEditando ? "Editar Serviço" : "Novo Serviço"}
             >
+                <ErrorAlert message={erroAPI} />
                 <form onSubmit={handleSave}>
                     <div className="form-group">
                         <label>Nome do Serviço *</label>
@@ -166,6 +177,14 @@ export default function Servicos() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => excluirServico(itemToDelete)}
+                title="Excluir Serviço"
+                message="Deseja realmente excluir este serviço? Esta ação não pode ser desfeita."
+            />
 
         </Layout>
     );

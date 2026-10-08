@@ -3,6 +3,8 @@ import { useAgendamentos } from "../hooks/useAgendamentos";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import ConfirmModal from "../components/ConfirmModal";
+import ErrorAlert from "../components/ErrorAlert";
 import api from "../services/api";
 
 export default function Agendamentos() {
@@ -26,6 +28,8 @@ export default function Agendamentos() {
     } = useAgendamentos();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     const [erroAPI, setErroAPI] = useState("");
     const [historicoCliente, setHistoricoCliente] = useState(null);
 
@@ -183,15 +187,14 @@ export default function Agendamentos() {
                                 <td>{agendamento.hora}</td>
                                 <td>
                                     <select
-                                        className="input-field"
-                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.9rem', width: 'auto' }}
+                                        className={`status-select status-${agendamento.status}`}
                                         value={agendamento.status}
                                         onChange={(e) => alterarStatus(agendamento.id, e.target.value)}
                                     >
-                                        <option value="agendado">🟡 Agendado</option>
-                                        <option value="confirmado">🔵 Confirmado</option>
-                                        <option value="concluido">🟢 Concluído</option>
-                                        <option value="cancelado">🔴 Cancelado</option>
+                                        <option value="agendado">Agendado</option>
+                                        <option value="confirmado">Confirmado</option>
+                                        <option value="concluido">Concluído</option>
+                                        <option value="cancelado">Cancelado</option>
                                     </select>
                                 </td>
                                 <td>
@@ -207,9 +210,8 @@ export default function Agendamentos() {
                                             className="icon-btn danger" 
                                             title="Excluir"
                                             onClick={() => {
-                                                if(window.confirm("Deseja realmente excluir este agendamento?")) {
-                                                    excluirAgendamento(agendamento.id);
-                                                }
+                                                setItemToDelete(agendamento.id);
+                                                setIsConfirmOpen(true);
                                             }}
                                         >
                                             <Trash2 size={18} />
@@ -234,26 +236,7 @@ export default function Agendamentos() {
                 onClose={() => setIsModalOpen(false)}
                 title={agendamentoEditando ? "Editar Agendamento" : "Novo Agendamento"}
             >
-                {erroAPI && (
-                    <div style={{
-                        backgroundColor: '#fee2e2',
-                        color: '#991b1b',
-                        padding: '12px 16px',
-                        borderRadius: '8px',
-                        marginBottom: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        fontSize: '0.95rem',
-                        border: '1px solid #f87171'
-                    }}>
-                        <span style={{ fontSize: '1.2rem' }}>⚠️</span>
-                        <div>
-                            <strong>Não foi possível agendar:</strong><br/>
-                            {erroAPI}
-                        </div>
-                    </div>
-                )}
+                <ErrorAlert message={erroAPI} />
                 <form onSubmit={handleSave}>
                     
                     <div className="form-group">
@@ -357,6 +340,14 @@ export default function Agendamentos() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => excluirAgendamento(itemToDelete)}
+                title="Excluir Agendamento"
+                message="Deseja realmente excluir este agendamento? Esta ação não pode ser desfeita."
+            />
 
         </Layout>
     );

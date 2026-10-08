@@ -25,8 +25,7 @@ export function useClientes() {
 
     async function cadastrarCliente() {
         if (!nome || !telefone || !email) {
-            alert("Preencha todos os campos.");
-            return;
+            return { success: false, error: "Preencha todos os campos obrigatórios." };
         }
 
         try {
@@ -42,15 +41,14 @@ export function useClientes() {
             setEmail("");
             setNota("");
             carregarClientes();
+            return { success: true };
         } catch (erro) {
             console.error(erro);
+            return { success: false, error: "Erro ao salvar cliente." };
         }
     }
 
     async function excluirCliente(id) {
-        const confirmar = window.confirm("Deseja realmente excluir este cliente?");
-        if (!confirmar) return;
-
         try {
             await deleteCliente(id);
             carregarClientes();

@@ -3,6 +3,8 @@ import { usePagamentos } from "../hooks/usePagamentos";
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import Layout from "../components/Layout";
 import Modal from "../components/Modal";
+import ConfirmModal from "../components/ConfirmModal";
+import ErrorAlert from "../components/ErrorAlert";
 import { formatCurrency } from "../utils/masks";
 
 export default function Pagamentos() {
@@ -23,8 +25,12 @@ export default function Pagamentos() {
     } = usePagamentos();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [erroAPI, setErroAPI] = useState("");
 
     const handleOpenModal = (pagamento = null) => {
+        setErroAPI("");
         if (pagamento) {
             editarPagamento(pagamento);
         } else {
@@ -40,8 +46,13 @@ export default function Pagamentos() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        await cadastrarPagamento();
-        setIsModalOpen(false);
+        setErroAPI("");
+        const resultado = await cadastrarPagamento();
+        if (resultado?.success) {
+            setIsModalOpen(false);
+        } else {
+            setErroAPI(resultado?.error || "Erro ao salvar.");
+        }
     };
 
     return (
@@ -82,14 +93,13 @@ export default function Pagamentos() {
                                 <td>{formatCurrency(pagamento.valor)}</td>
                                 <td>
                                     <select
-                                        className="input-field"
-                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.9rem', width: 'auto' }}
+                                        className={`status-select status-${pagamento.status}`}
                                         value={pagamento.status}
                                         onChange={(e) => alterarStatusPagamento(pagamento.id, e.target.value)}
                                     >
-                                        <option value="pendente">🟡 Pendente</option>
-                                        <option value="pago">🟢 Pago</option>
-                                        <option value="cancelado">🔴 Cancelado</option>
+                                        <option value="pendente">Pendente</option>
+                                        <option value="pago">Pago</option>
+                                        <option value="cancelado">Cancelado</option>
                                     </select>
                                 </td>
                                 <td>
@@ -104,7 +114,10 @@ export default function Pagamentos() {
                                         <button
                                             className="icon-btn danger"
                                             title="Excluir"
-                                            onClick={() => excluirPagamento(pagamento.id)}
+                                            onClick={() => {
+                                                setItemToDelete(pagamento.id);
+                                                setIsConfirmOpen(true);
+                                            }}
                                         >
                                             <Trash2 size={18} />
                                         </button>
@@ -128,6 +141,7 @@ export default function Pagamentos() {
                 onClose={() => setIsModalOpen(false)}
                 title={pagamentoEditando ? "Editar Pagamento" : "Novo Pagamento"}
             >
+                <ErrorAlert message={erroAPI} />
                 <form onSubmit={handleSave}>
 
                     <div className="form-group">
@@ -215,6 +229,14 @@ export default function Pagamentos() {
                     </div>
                 </form>
             </Modal>
+
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={() => excluirPagamento(itemToDelete)}
+                title="Excluir Pagamento"
+                message="Deseja realmente excluir este pagamento? Esta ação não pode ser desfeita."
+            />
 
         </Layout>
     );

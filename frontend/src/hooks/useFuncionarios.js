@@ -25,8 +25,7 @@ export function useFuncionarios() {
 
     async function cadastrarFuncionario() {
         if (!nome || !funcao || !telefone || !email) {
-            alert("Preencha todos os campos.");
-            return;
+            return { success: false, error: "Preencha todos os campos obrigatórios." };
         }
 
         try {
@@ -42,15 +41,14 @@ export function useFuncionarios() {
             setTelefone("");
             setEmail("");
             carregarFuncionarios();
+            return { success: true };
         } catch (erro) {
             console.error(erro);
+            return { success: false, error: "Erro ao salvar funcionário." };
         }
     }
 
     async function excluirFuncionario(id) {
-        const confirmar = window.confirm("Deseja realmente excluir este funcionário?");
-        if (!confirmar) return;
-
         try {
             await deleteFuncionario(id);
             carregarFuncionarios();

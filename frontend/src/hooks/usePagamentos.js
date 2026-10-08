@@ -40,8 +40,7 @@ export function usePagamentos() {
 
     async function cadastrarPagamento() {
         if (!agendamentoId || !valor || !formaPagamento || !status || !dataPagamento) {
-            alert("Preencha todos os campos.");
-            return;
+            return { success: false, error: "Preencha todos os campos obrigatórios." };
         }
 
         try {
@@ -71,14 +70,14 @@ export function usePagamentos() {
             setDataPagamento("");
 
             carregarPagamentos();
+            return { success: true };
         } catch (erro) {
             console.error(erro);
+            return { success: false, error: "Erro ao salvar pagamento." };
         }
     }
 
     async function excluirPagamento(id) {
-        if (!confirm("Deseja realmente excluir este pagamento?")) return;
-
         try {
             await deletePagamento(id);
             carregarPagamentos();
