@@ -19,9 +19,9 @@ export default function Card({ titulo, valor, icon: Icon, colorClass = "primary"
                     {titulo}
                 </h3>
                 {Icon && (
-                    <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'center',
                         width: '40px',
                         height: '40px',
@@ -34,7 +34,7 @@ export default function Card({ titulo, valor, icon: Icon, colorClass = "primary"
                 )}
             </div>
 
-            <p 
+            <p
                 style={{
                     margin: 0,
                     fontSize: "2rem",
