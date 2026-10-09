@@ -39,6 +39,7 @@ def listar_pagamentos(usuario_id):
             ON a.servico_id = s.id
             
         WHERE p.usuario_id = ?
+        ORDER BY p.data_pagamento DESC, p.id DESC
     """, (usuario_id,)).fetchall()
 
     conexao.close()

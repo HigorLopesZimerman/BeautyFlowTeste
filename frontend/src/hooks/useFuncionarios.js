@@ -69,9 +69,11 @@ export function useFuncionarios() {
         setEmail(funcionario.email);
     }
 
-    const funcionariosFiltrados = funcionarios.filter((funcionario) =>
-        funcionario.nome.toLowerCase().includes(pesquisa.toLowerCase())
-    );
+    const funcionariosFiltrados = funcionarios
+        .filter((funcionario) =>
+            funcionario.nome.toLowerCase().includes(pesquisa.toLowerCase())
+        )
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
 
     return {
         nome, setNome,

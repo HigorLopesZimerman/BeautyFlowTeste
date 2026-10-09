@@ -66,12 +66,14 @@ export function useClientes() {
         setNota(cliente.nota || "");
     }
 
-    const clientesFiltrados = clientes.filter((cliente) =>
-        cliente.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
-        cliente.telefone.toLowerCase().includes(pesquisa.toLowerCase()) ||
-        (cliente.email && cliente.email.toLowerCase().includes(pesquisa.toLowerCase())) ||
-        (cliente.nota && cliente.nota.toLowerCase().includes(pesquisa.toLowerCase()))
-    );
+    const clientesFiltrados = clientes
+        .filter((cliente) =>
+            cliente.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+            cliente.telefone.toLowerCase().includes(pesquisa.toLowerCase()) ||
+            (cliente.email && cliente.email.toLowerCase().includes(pesquisa.toLowerCase())) ||
+            (cliente.nota && cliente.nota.toLowerCase().includes(pesquisa.toLowerCase()))
+        )
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
 
     return {
         nome, setNome,

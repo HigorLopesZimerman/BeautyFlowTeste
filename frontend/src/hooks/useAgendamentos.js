@@ -128,17 +128,23 @@ export function useAgendamentos() {
         setStatus(agendamento.status || "agendado");
     }
 
-    const agendamentosFiltrados = agendamentos.filter((agendamento) => {
-        const texto = pesquisa.toLowerCase();
-        const correspondePesquisa =
-            (agendamento.cliente && agendamento.cliente.toLowerCase().includes(texto)) ||
-            (agendamento.funcionario && agendamento.funcionario.toLowerCase().includes(texto)) ||
-            (agendamento.servico && agendamento.servico.toLowerCase().includes(texto));
+    const agendamentosFiltrados = agendamentos
+        .filter((agendamento) => {
+            const texto = pesquisa.toLowerCase();
+            const correspondePesquisa =
+                (agendamento.cliente && agendamento.cliente.toLowerCase().includes(texto)) ||
+                (agendamento.funcionario && agendamento.funcionario.toLowerCase().includes(texto)) ||
+                (agendamento.servico && agendamento.servico.toLowerCase().includes(texto));
 
-        const correspondeStatus = filtroStatus === "Todos" || agendamento.status === filtroStatus;
+            const correspondeStatus = filtroStatus === "Todos" || agendamento.status === filtroStatus;
 
-        return correspondePesquisa && correspondeStatus;
-    });
+            return correspondePesquisa && correspondeStatus;
+        })
+        .sort((a, b) => {
+            const dataComp = (b.data || "").localeCompare(a.data || "");
+            if (dataComp !== 0) return dataComp;
+            return (b.hora || "").localeCompare(a.hora || "");
+        });
 
     return {
         clientes, funcionarios, servicos,

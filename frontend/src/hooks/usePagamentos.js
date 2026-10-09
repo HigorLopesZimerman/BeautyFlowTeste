@@ -108,15 +108,21 @@ export function usePagamentos() {
         setDataPagamento(pagamento.data_pagamento);
     }
 
-    const pagamentosFiltrados = pagamentos.filter((pagamento) => {
-        const texto = pesquisa.toLowerCase();
-        return (
-            (pagamento.cliente && pagamento.cliente.toLowerCase().includes(texto)) ||
-            (pagamento.servico && pagamento.servico.toLowerCase().includes(texto)) ||
-            (pagamento.forma_pagamento && pagamento.forma_pagamento.toLowerCase().includes(texto)) ||
-            (pagamento.status && pagamento.status.toLowerCase().includes(texto))
-        );
-    });
+    const pagamentosFiltrados = pagamentos
+        .filter((pagamento) => {
+            const texto = pesquisa.toLowerCase();
+            return (
+                (pagamento.cliente && pagamento.cliente.toLowerCase().includes(texto)) ||
+                (pagamento.servico && pagamento.servico.toLowerCase().includes(texto)) ||
+                (pagamento.forma_pagamento && pagamento.forma_pagamento.toLowerCase().includes(texto)) ||
+                (pagamento.status && pagamento.status.toLowerCase().includes(texto))
+            );
+        })
+        .sort((a, b) => {
+            const dataComp = (b.data_pagamento || "").localeCompare(a.data_pagamento || "");
+            if (dataComp !== 0) return dataComp;
+            return (b.id || 0) - (a.id || 0);
+        });
 
     return {
         agendamentos,

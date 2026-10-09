@@ -3,10 +3,10 @@ import { User, Scissors, DollarSign } from 'lucide-react';
 import { formatCurrency } from '../utils/masks';
 
 export default function ComandaModal({ agendamento, onClose, onFecharComanda }) {
-    if (!agendamento) return null;
-
     const [observacao, setObservacao] = useState("");
-    const [valorEditado, setValorEditado] = useState(agendamento.preco || 0);
+    const [valorEditado, setValorEditado] = useState(agendamento?.preco || 0);
+
+    if (!agendamento) return null;
 
     const handleFechar = () => {
         onFecharComanda({

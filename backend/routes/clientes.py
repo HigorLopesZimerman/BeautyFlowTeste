@@ -13,7 +13,7 @@ def listar_clientes(usuario_id):
     conexao = conectar()
 
     clientes = conexao.execute(
-        "SELECT * FROM clientes WHERE usuario_id = ?",
+        "SELECT * FROM clientes WHERE usuario_id = ? ORDER BY LOWER(nome) ASC",
         (usuario_id,)
     ).fetchall()
 

@@ -66,9 +66,11 @@ export function useServicos() {
         setPreco(servico.preco);
     }
 
-    const servicosFiltrados = servicos.filter((servico) =>
-        servico.nome.toLowerCase().includes(pesquisa.toLowerCase())
-    );
+    const servicosFiltrados = servicos
+        .filter((servico) =>
+            servico.nome.toLowerCase().includes(pesquisa.toLowerCase())
+        )
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
 
     return {
         nome, setNome,

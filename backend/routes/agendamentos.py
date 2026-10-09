@@ -39,6 +39,8 @@ def listar_agendamentos(usuario_id):
             
         WHERE ag.usuario_id = ?
         
+        ORDER BY ag.data DESC, ag.hora DESC
+        
     """, (usuario_id,)).fetchall()
     
     conexao.close()

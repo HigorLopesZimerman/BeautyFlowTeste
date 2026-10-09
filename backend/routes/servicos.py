@@ -10,7 +10,7 @@ def listar_servicos(usuario_id):
     conexao = conectar()
     
     servicos = conexao.execute(
-        "SELECT * FROM servicos WHERE usuario_id = ?",
+        "SELECT * FROM servicos WHERE usuario_id = ? ORDER BY LOWER(nome) ASC",
         (usuario_id,)
     ).fetchall()
     

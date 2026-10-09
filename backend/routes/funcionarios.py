@@ -10,7 +10,7 @@ def listar_funcionarios(usuario_id):
     conexao = conectar()
 
     funcionarios = conexao.execute(
-        "SELECT * FROM funcionarios WHERE usuario_id = ?",
+        "SELECT * FROM funcionarios WHERE usuario_id = ? ORDER BY LOWER(nome) ASC",
         (usuario_id,)
     ).fetchall()
 
