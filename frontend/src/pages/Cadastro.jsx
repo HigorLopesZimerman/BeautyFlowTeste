@@ -38,7 +38,6 @@ export default function Cadastro() {
             setEmail("");
             setSenha("");
             setConfirmarSenha("");
-            // Redireciona para o login após 2 segundos
             setTimeout(() => {
                 navigate("/login");
             }, 2000);

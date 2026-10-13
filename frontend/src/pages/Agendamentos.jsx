@@ -33,7 +33,6 @@ export default function Agendamentos() {
     const [erroAPI, setErroAPI] = useState("");
     const [historicoCliente, setHistoricoCliente] = useState(null);
 
-    // Efeito para carregar o histórico do cliente (Prontuário)
     useEffect(() => {
         if (clienteId) {
             api.get(`/clientes/${clienteId}/historico`)
@@ -44,7 +43,6 @@ export default function Agendamentos() {
         }
     }, [clienteId]);
 
-    // Efeito para calcular a hora fim automaticamente (Smart Defaults)
     useEffect(() => {
         if (hora && servicoId) {
             const servico = servicos.find(s => s.id === parseInt(servicoId));
@@ -86,7 +84,6 @@ export default function Agendamentos() {
         }
     };
 
-    // Função auxiliar para renderizar a badge de status corretamente
     const renderStatusBadge = (statusValue) => {
         let badgeClass = "badge-neutral";
         let label = "Agendado";

@@ -31,12 +31,11 @@ export default function Clientes() {
         if (cliente) {
             editarCliente(cliente);
         } else {
-            // Limpa form para novo cadastro
             setNome("");
             setTelefone("");
             setEmail("");
             setNota("");
-            editarCliente(null); // Reseta o estado de edição no hook
+            editarCliente(null);
         }
         setIsModalOpen(true);
     };

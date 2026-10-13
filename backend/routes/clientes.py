@@ -4,9 +4,6 @@ from routes.auth import token_required
 
 clientes_bp = Blueprint("clientes", __name__)
 
-# ==================== CLIENTES ====================
-
-# Listar clientes
 @clientes_bp.route("/clientes", methods=["GET"])
 @token_required
 def listar_clientes(usuario_id):
@@ -27,7 +24,6 @@ def listar_clientes(usuario_id):
 def historico_cliente(usuario_id, id):
     conexao = conectar()
 
-    # Busca o último agendamento (concluído) desse cliente
     ultimo_agendamento = conexao.execute("""
         SELECT a.data, s.nome as servico
         FROM agendamentos a
@@ -51,7 +47,6 @@ def historico_cliente(usuario_id, id):
         })
 
 
-# Cadastrar cliente
 @clientes_bp.route("/clientes", methods=["POST"])
 @token_required
 def cadastrar_cliente(usuario_id):
@@ -88,7 +83,6 @@ def cadastrar_cliente(usuario_id):
     }), 201
 
 
-# Editar cliente
 @clientes_bp.route("/clientes/<int:id>", methods=["PUT"])
 @token_required
 def editar_cliente(usuario_id, id):
@@ -123,7 +117,6 @@ def editar_cliente(usuario_id, id):
     })
 
 
-# Excluir cliente
 @clientes_bp.route("/clientes/<int:id>", methods=["DELETE"])
 @token_required
 def excluir_cliente(usuario_id, id):
@@ -141,7 +134,6 @@ def excluir_cliente(usuario_id, id):
         "mensagem": "Cliente excluído com sucesso!"
     })
 
-# Buscar clientes ausentes (retenção)
 @clientes_bp.route("/clientes/ausentes", methods=["GET"])
 @token_required
 def clientes_ausentes(usuario_id):
@@ -154,7 +146,7 @@ def clientes_ausentes(usuario_id):
         JOIN agendamentos a ON c.id = a.cliente_id
         WHERE a.status = 'concluido' AND c.usuario_id = ?
         GROUP BY c.id, c.nome, c.telefone
-        HAVING date(ultima_visita) <= date('now', '-30 days')
+        HAVING date(ultima_visita) <= date('now', '-5 days')
         ORDER BY ultima_visita ASC
         LIMIT 5
     """, (usuario_id,)).fetchall()

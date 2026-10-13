@@ -138,8 +138,6 @@ def editar_pagamento(usuario_id, id):
         }), 400
 
     conexao = conectar()
-
-    # Verifica se o pagamento existe
     pagamento = conexao.execute("""
         SELECT id
         FROM pagamentos
@@ -152,7 +150,6 @@ def editar_pagamento(usuario_id, id):
             "erro": "Pagamento não encontrado."
         }), 404
 
-    # Verifica se o agendamento existe
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos

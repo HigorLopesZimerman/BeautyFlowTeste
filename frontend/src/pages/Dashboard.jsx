@@ -74,7 +74,6 @@ export default function Dashboard() {
         try {
             setErroAPI("");
             setSuccessAPI("");
-            // 1. Criar o pagamento
             const hoje = new Date().toISOString().split('T')[0];
             await createPagamento({
                 agendamento_id: selectedAgendamento.id,
@@ -84,7 +83,6 @@ export default function Dashboard() {
                 data_pagamento: hoje
             });
 
-            // 2. Atualizar status do agendamento para concluído
             await updateAgendamentoStatus(selectedAgendamento.id, 'concluido');
 
             setModalAberto(null);

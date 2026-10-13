@@ -186,8 +186,6 @@ def editar_agendamento(usuario_id, id):
         }), 400
 
     conexao = conectar()
-
-    # Verifica se o agendamento existe e pertence ao usuário
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos
@@ -200,7 +198,6 @@ def editar_agendamento(usuario_id, id):
             "erro": "Agendamento não encontrado."
         }), 404
 
-    # Verifica se o cliente existe
     cliente = conexao.execute(
         "SELECT id FROM clientes WHERE id = ? AND usuario_id = ?",
         (cliente_id, usuario_id)
@@ -212,7 +209,6 @@ def editar_agendamento(usuario_id, id):
             "erro": "Cliente não encontrado."
         }), 404
 
-    # Verifica se o funcionário existe
     funcionario = conexao.execute(
         "SELECT id FROM funcionarios WHERE id = ? AND usuario_id = ?",
         (funcionario_id, usuario_id)
@@ -224,7 +220,6 @@ def editar_agendamento(usuario_id, id):
             "erro": "Funcionário não encontrado."
         }), 404
 
-    # Verifica se o serviço existe
     servico = conexao.execute(
         "SELECT id FROM servicos WHERE id = ? AND usuario_id = ?",
         (servico_id, usuario_id)
@@ -236,7 +231,6 @@ def editar_agendamento(usuario_id, id):
             "erro": "Serviço não encontrado."
         }), 404
 
-    # Verifica conflito de horário
     agendamento_existente = conexao.execute("""
         SELECT id
         FROM agendamentos
@@ -261,7 +255,6 @@ def editar_agendamento(usuario_id, id):
             "erro": "Este funcionário já possui um agendamento nesse horário."
         }), 400
 
-    # Atualiza o agendamento
     conexao.execute("""
         UPDATE agendamentos
         SET
@@ -343,8 +336,6 @@ def alterar_status(usuario_id, id):
 @token_required
 def excluir_agendamento(usuario_id, id):
     conexao = conectar()
-    
-    # Verifica se o agendamento existe
     agendamento = conexao.execute("""
         SELECT id
         FROM agendamentos
@@ -357,8 +348,6 @@ def excluir_agendamento(usuario_id, id):
             "erro": "Agendamento não encontrado."
         }), 404
         
-        
-    # Exclui o agendamento
     conexao.execute("""
         DELETE FROM agendamentos
         WHERE id = ? AND usuario_id = ?

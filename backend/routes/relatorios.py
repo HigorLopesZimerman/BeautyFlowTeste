@@ -12,7 +12,6 @@ def relatorios(usuario_id):
 
     conexao = conectar()
 
-    # Construir condições de data se fornecidas
     condicao_agendamento = f" WHERE a.usuario_id = {usuario_id} "
     condicao_pagamento = f" WHERE p.usuario_id = {usuario_id} "
     params_agendamento = []
@@ -24,21 +23,18 @@ def relatorios(usuario_id):
         params_agendamento.extend([inicio, fim])
         params_pagamento.extend([inicio, fim])
 
-    # Função auxiliar para queries com data (agendamentos)
     def query_agendamento(base_query, extra_cond=""):
         where_clause = condicao_agendamento
         if extra_cond:
             where_clause += " AND " + extra_cond
         return conexao.execute(base_query + where_clause, params_agendamento).fetchone()
 
-    # Função auxiliar para queries com data (pagamentos)
     def query_pagamento(base_query, extra_cond=""):
         where_clause = condicao_pagamento
         if extra_cond:
             where_clause += " AND " + extra_cond
         return conexao.execute(base_query + where_clause, params_pagamento).fetchone()
 
-    # Serviço mais realizado
     servico_mais_realizado = conexao.execute(f"""
         SELECT s.nome, COUNT(*) AS quantidade
         FROM agendamentos a
@@ -49,7 +45,6 @@ def relatorios(usuario_id):
         LIMIT 1
     """, params_agendamento).fetchone()
 
-    # Cliente frequente
     cliente_frequente = conexao.execute(f"""
         SELECT c.nome, COUNT(*) AS quantidade
         FROM agendamentos a
@@ -60,7 +55,6 @@ def relatorios(usuario_id):
         LIMIT 1
     """, params_agendamento).fetchone()
 
-    # Funcionário destaque
     funcionario_destaque = conexao.execute(f"""
         SELECT f.nome, COUNT(*) AS quantidade
         FROM agendamentos a
@@ -71,7 +65,6 @@ def relatorios(usuario_id):
         LIMIT 1
     """, params_agendamento).fetchone()
 
-    # Totais
     total_agendamentos = query_agendamento("SELECT COUNT(*) FROM agendamentos a")[0]
     agendamentos_concluidos = query_agendamento("SELECT COUNT(*) FROM agendamentos a", "LOWER(a.status) = 'concluido'")[0]
     agendamentos_cancelados = query_agendamento("SELECT COUNT(*) FROM agendamentos a", "LOWER(a.status) = 'cancelado'")[0]

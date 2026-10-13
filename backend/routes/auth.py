@@ -93,7 +93,6 @@ def register():
         
     conexao = conectar()
     
-    # Verifica se o email já está em uso
     existente = conexao.execute("""
         SELECT id FROM usuarios WHERE email = ?
     """, (email,)).fetchone()
@@ -105,7 +104,6 @@ def register():
             "erro": "Este e-mail já está cadastrado."
         }), 400
         
-    # Insere novo usuário com hash de senha
     senha_hash = generate_password_hash(senha)
     try:
         conexao.execute("""
@@ -220,7 +218,6 @@ def reset_password():
     except jwt.InvalidTokenError:
         return jsonify({"sucesso": False, "erro": "Token de recuperação inválido."}), 401
         
-    # Hash da nova senha
     senha_hash = generate_password_hash(nova_senha)
     
     conexao = conectar()

@@ -24,7 +24,6 @@ export default function Login() {
         setCarregando(true);
         try {
             const data = await login(email, senha);
-            // Salva o token falso e navega para o dashboard
             localStorage.setItem("token", data.token);
             localStorage.setItem("usuario", JSON.stringify(data.usuario));
             navigate("/");

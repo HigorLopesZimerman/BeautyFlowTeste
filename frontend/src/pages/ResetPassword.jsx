@@ -48,7 +48,6 @@ function ResetPassword() {
             });
             setSucesso(resposta.data.mensagem);
             
-            // Redirecionar para login após 3 segundos
             setTimeout(() => {
                 navigate("/login");
             }, 3000);
