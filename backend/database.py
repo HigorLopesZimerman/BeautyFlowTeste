@@ -104,21 +104,20 @@ def criar_banco():
     try:
         cursor.execute("ALTER TABLE clientes ADD COLUMN nota TEXT")
     except sqlite3.OperationalError:
-        pass # A coluna já existe
+        pass
 
     try:
         cursor.execute("ALTER TABLE agendamentos ADD COLUMN hora_fim TEXT")
     except sqlite3.OperationalError:
-        pass # A coluna já existe
+        pass
 
     # Migrações para Multi-Tenant (usuario_id)
-    # Por padrão, associaremos os dados existentes ao Admin (id 1) para preservar tudo
     tabelas_tenant = ['clientes', 'funcionarios', 'servicos', 'agendamentos', 'pagamentos']
     for tabela in tabelas_tenant:
         try:
             cursor.execute(f"ALTER TABLE {tabela} ADD COLUMN usuario_id INTEGER NOT NULL DEFAULT 1 REFERENCES usuarios(id)")
         except sqlite3.OperationalError:
-            pass # A coluna já existe
+            pass
 
     # Inserir administrador padrão caso não haja usuários
     cursor.execute("SELECT COUNT(*) FROM usuarios")

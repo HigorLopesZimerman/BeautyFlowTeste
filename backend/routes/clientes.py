@@ -146,7 +146,7 @@ def clientes_ausentes(usuario_id):
         JOIN agendamentos a ON c.id = a.cliente_id
         WHERE a.status = 'concluido' AND c.usuario_id = ?
         GROUP BY c.id, c.nome, c.telefone
-        HAVING date(ultima_visita) <= date('now', '-5 days')
+        HAVING date(ultima_visita) <= date('now', '-30 days')
         ORDER BY ultima_visita ASC
         LIMIT 5
     """, (usuario_id,)).fetchall()
