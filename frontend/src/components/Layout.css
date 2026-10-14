@@ -63,7 +63,7 @@
 @media (max-width: 768px) {
   .layout-container {
     flex-direction: column;
-    padding-bottom: 70px; /* Espaço para o menu inferior */
+    padding-bottom: 70px;
   }
 
   .sidebar {
@@ -79,16 +79,16 @@
     z-index: 1000;
     justify-content: flex-start;
     align-items: center;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-    -webkit-overflow-scrolling: touch; /* Suave no iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Esconde apenas a logo no mobile, mantém o logout */
   .sidebar h2 {
-    display: none; 
+    display: none;
   }
 
   .nav-menu {

@@ -3,15 +3,13 @@ import { User, Scissors, DollarSign } from 'lucide-react';
 import { formatCurrency } from '../utils/masks';
 
 export default function ComandaModal({ agendamento, onClose, onFecharComanda }) {
-    const [observacao, setObservacao] = useState("");
     const [valorEditado, setValorEditado] = useState(agendamento?.preco || 0);
 
     if (!agendamento) return null;
 
     const handleFechar = () => {
         onFecharComanda({
-            valor: valorEditado,
-            observacao: observacao
+            valor: valorEditado
         });
     };
 
@@ -36,26 +34,15 @@ export default function ComandaModal({ agendamento, onClose, onFecharComanda }) 
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <DollarSign size={16} />
-                                <input 
-                                    type="number" 
-                                    className="input-field" 
-                                    value={valorEditado} 
+                                <input
+                                    type="number"
+                                    className="input-field"
+                                    value={valorEditado}
                                     onChange={(e) => setValorEditado(e.target.value)}
                                     style={{ width: '80px', padding: '4px 8px' }}
                                 />
                             </div>
                         </div>
-                    </div>
-
-                    <div className="form-group" style={{ marginTop: '0.5rem' }}>
-                        <label>Observação (Opcional)</label>
-                        <textarea 
-                            className="input-field" 
-                            rows="3"
-                            value={observacao}
-                            onChange={(e) => setObservacao(e.target.value)}
-                            placeholder="Anotações sobre este atendimento..."
-                        ></textarea>
                     </div>
                 </div>
 

@@ -22,7 +22,7 @@ export default function StatusBadge({ status }) {
         },
 
         pago: {
-            background: "#3000cfff",
+            background: "#e3dcfcff",
             color: "#166534",
         },
     };
