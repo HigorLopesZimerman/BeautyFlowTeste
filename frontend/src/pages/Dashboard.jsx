@@ -24,7 +24,7 @@ export default function Dashboard() {
         return (
             <Layout>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                    <h2 style={{ color: 'var(--text-muted)' }}>Carregando dados do painel...</h2>
+                    <h2 style={{ color: 'var(--texto-secundario)' }}>Carregando dados do painel...</h2>
                 </div>
             </Layout>
         );
@@ -138,11 +138,11 @@ export default function Dashboard() {
                 <div 
                     className={proximoAtendimento?.status === 'agendado' ? 'pulse-alert' : ''}
                     style={{ 
-                        background: 'var(--primary)', 
+                        background: 'var(--cor-primaria)', 
                         color: 'white', 
-                        borderRadius: 'var(--radius-lg)', 
+                        borderRadius: 'var(--borda-raio-lg)', 
                         padding: '2rem',
-                        boxShadow: 'var(--shadow-lg)',
+                        boxShadow: 'var(--sombra-lg)',
                         position: 'relative'
                     }}
                 >
@@ -170,9 +170,9 @@ export default function Dashboard() {
                             
                             {proximoAtendimento.status === 'agendado' && (
                                 <div style={{ 
-                                    background: 'var(--danger)', 
+                                    background: 'var(--cor-perigo)', 
                                     padding: '12px', 
-                                    borderRadius: 'var(--radius-md)', 
+                                    borderRadius: 'var(--borda-raio-md)', 
                                     marginTop: '1rem',
                                     fontWeight: 'bold',
                                     display: 'flex',
@@ -197,18 +197,18 @@ export default function Dashboard() {
 
                 {/* Agenda de Hoje */}
                 <div style={{ 
-                    background: 'var(--bg-surface)', 
-                    borderRadius: 'var(--radius-lg)', 
+                    background: 'var(--fundo-superficie)', 
+                    borderRadius: 'var(--borda-raio-lg)', 
                     padding: '2rem',
-                    boxShadow: 'var(--shadow-md)',
-                    border: '1px solid var(--border-color)'
+                    boxShadow: 'var(--sombra-md)',
+                    border: '1px solid var(--cor-borda)'
                 }}>
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0 0 1.5rem 0' }}>
                         <Calendar size={24} className="text-primary" /> Agenda de Hoje
                     </h2>
 
                     {agendaHoje.length === 0 ? (
-                        <p style={{ color: 'var(--text-muted)' }}>Você não tem agendamentos para o dia de hoje.</p>
+                        <p style={{ color: 'var(--texto-secundario)' }}>Você não tem agendamentos para o dia de hoje.</p>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {agendaHoje.map((agendamento, index) => (
@@ -220,28 +220,28 @@ export default function Dashboard() {
                                             justifyContent: "space-between",
                                             alignItems: "center",
                                             padding: "1rem",
-                                            borderBottom: index < agendaHoje.length - 1 ? "1px solid var(--border-color)" : "none",
+                                            borderBottom: index < agendaHoje.length - 1 ? "1px solid var(--cor-borda)" : "none",
                                             cursor: "pointer",
-                                            borderRadius: "var(--radius-md)",
+                                            borderRadius: "var(--borda-raio-md)",
                                             transition: "background 0.2s",
-                                            background: "var(--bg-app)",
+                                            background: "var(--fundo-app)",
                                             marginBottom: "0.5rem"
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-surface)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-app)'}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--fundo-superficie)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'var(--fundo-app)'}
                                     >
                                     <div>
-                                        <strong style={{ color: 'var(--primary)', fontSize: '1.1rem', display: 'block', marginBottom: '4px' }}>
+                                        <strong style={{ color: 'var(--cor-primaria)', fontSize: '1.1rem', display: 'block', marginBottom: '4px' }}>
                                             {agendamento.hora}
                                         </strong>
                                         <span style={{ fontWeight: '500' }}>{agendamento.cliente}</span>
                                         {agendamento.cliente_nota && (
-                                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <div style={{ fontSize: '0.85rem', color: 'var(--texto-secundario)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                 <FileText size={14} /> {agendamento.cliente_nota}
                                             </div>
                                         )}
                                     </div>
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'right' }}>
+                                    <div style={{ color: 'var(--texto-secundario)', fontSize: '0.9rem', textAlign: 'right' }}>
                                         {agendamento.servico}
                                     </div>
                                 </div>
@@ -255,17 +255,17 @@ export default function Dashboard() {
             {dados?.ausentes?.length > 0 && (
                 <div style={{ 
                     marginTop: '2.5rem',
-                    background: 'var(--bg-surface)', 
-                    borderRadius: 'var(--radius-lg)', 
+                    background: 'var(--fundo-superficie)', 
+                    borderRadius: 'var(--borda-raio-lg)', 
                     padding: '1.5rem',
-                    boxShadow: 'var(--shadow-sm)',
-                    border: '1px solid var(--border-color)'
+                    boxShadow: 'var(--sombra-sm)',
+                    border: '1px solid var(--cor-borda)'
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontSize: '1.2rem', color: 'var(--text-main)' }}>
+                        <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontSize: '1.2rem', color: 'var(--texto-principal)' }}>
                             <AlertCircle size={20} className="text-primary" /> Retenção de Clientes
                         </h2>
-                        <span style={{ fontSize: '0.8rem', background: 'var(--bg-app)', border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '4px 10px', borderRadius: '12px' }}>
+                        <span style={{ fontSize: '0.8rem', background: 'var(--fundo-app)', border: '1px solid var(--cor-borda)', color: 'var(--texto-secundario)', padding: '4px 10px', borderRadius: '12px' }}>
                             {dados.ausentes.length} ausentes
                         </span>
                     </div>
@@ -279,17 +279,17 @@ export default function Dashboard() {
 
                             return (
                                 <div key={index} style={{
-                                    background: 'var(--bg-app)',
+                                    background: 'var(--fundo-app)',
                                     padding: '0.75rem 1rem',
-                                    borderRadius: 'var(--radius-md)',
+                                    borderRadius: 'var(--borda-raio-md)',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    border: '1px solid var(--border-color)'
+                                    border: '1px solid var(--cor-borda)'
                                 }}>
                                     <div>
-                                        <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--text-main)' }}>{cliente.nome}</strong>
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Última visita: {dataFormatada}</span>
+                                        <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--texto-principal)' }}>{cliente.nome}</strong>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--texto-secundario)' }}>Última visita: {dataFormatada}</span>
                                     </div>
                                     <button 
                                         onClick={() => window.open(linkWhats, '_blank')}

@@ -39,14 +39,14 @@ function ForgotPassword() {
                 borderRadius: "1rem",
                 width: "100%",
                 maxWidth: "400px",
-                boxShadow: "var(--shadow-lg)",
+                boxShadow: "var(--sombra-lg)",
                 border: "1px solid var(--border)",
                 textAlign: "center"
             }}>
                 <h2 style={{ fontSize: "1.8rem", marginBottom: "0.5rem", color: "var(--text)" }}>
                     Esqueceu a senha?
                 </h2>
-                <p style={{ color: "var(--text-muted)", marginBottom: "2rem", fontSize: "0.95rem" }}>
+                <p style={{ color: "var(--texto-secundario)", marginBottom: "2rem", fontSize: "0.95rem" }}>
                     Digite seu e-mail e nós te enviaremos um link para redefinir sua senha.
                 </p>
 
@@ -93,7 +93,7 @@ function ForgotPassword() {
                             padding: "0.875rem",
                             borderRadius: "0.5rem",
                             border: "none",
-                            backgroundColor: "var(--primary)",
+                            backgroundColor: "var(--cor-primaria)",
                             color: "white",
                             fontWeight: "600",
                             fontSize: "1rem",
@@ -106,9 +106,9 @@ function ForgotPassword() {
                     </button>
                 </form>
 
-                <div style={{ marginTop: "2rem", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                <div style={{ marginTop: "2rem", color: "var(--texto-secundario)", fontSize: "0.9rem" }}>
                     Lembrou a senha?{" "}
-                    <Link to="/login" style={{ color: "var(--primary)", fontWeight: "600", textDecoration: "none" }}>
+                    <Link to="/login" style={{ color: "var(--cor-primaria)", fontWeight: "600", textDecoration: "none" }}>
                         Voltar ao login
                     </Link>
                 </div>

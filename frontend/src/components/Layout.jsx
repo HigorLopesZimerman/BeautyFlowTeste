@@ -42,7 +42,7 @@ export default function Layout({ children }) {
                     ))}
                 </nav>
 
-                <div className="logout-container" style={{ marginTop: 'auto', padding: '1rem', borderTop: '1px solid var(--border-color)' }}>
+                <div className="logout-container" style={{ marginTop: 'auto', padding: '1rem', borderTop: '1px solid var(--cor-borda)' }}>
                     <button 
                         onClick={handleLogout}
                         style={{
@@ -53,11 +53,11 @@ export default function Layout({ children }) {
                             padding: '12px',
                             background: 'transparent',
                             border: 'none',
-                            color: 'var(--danger)',
+                            color: 'var(--cor-perigo)',
                             cursor: 'pointer',
                             fontSize: '1rem',
                             fontWeight: '500',
-                            borderRadius: 'var(--radius-md)',
+                            borderRadius: 'var(--borda-raio-md)',
                             transition: 'all 0.2s ease',
                         }}
                         onMouseOver={(e) => e.currentTarget.style.background = '#fef2f2'}

@@ -40,14 +40,14 @@ export default function Login() {
             alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
-            background: "linear-gradient(135deg, var(--primary) 0%, #1e3a8a 100%)",
+            background: "linear-gradient(135deg, var(--cor-primaria) 0%, #1e3a8a 100%)",
             width: "100%",
             padding: "1rem"
         }}>
             <div style={{
-                background: "var(--bg-surface)",
+                background: "var(--fundo-superficie)",
                 padding: "3rem",
-                borderRadius: "var(--radius-xl)",
+                borderRadius: "var(--borda-raio-xl)",
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
                 width: "100%",
                 maxWidth: "450px",
@@ -58,26 +58,26 @@ export default function Login() {
                     <div style={{
                         width: "60px",
                         height: "60px",
-                        background: "var(--primary-light)",
+                        background: "var(--cor-primaria-clara)",
                         borderRadius: "16px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         margin: "0 auto 1rem auto",
-                        color: "var(--primary)"
+                        color: "var(--cor-primaria)"
                     }}>
                         <Scissors size={32} />
                     </div>
-                    <h1 style={{ margin: "0 0 0.5rem 0", color: "var(--text-main)", fontSize: "2rem" }}>BeautyFlow</h1>
-                    <p style={{ color: "var(--text-muted)", margin: 0 }}>Gestão inteligente para o seu salão</p>
+                    <h1 style={{ margin: "0 0 0.5rem 0", color: "var(--texto-principal)", fontSize: "2rem" }}>BeautyFlow</h1>
+                    <p style={{ color: "var(--texto-secundario)", margin: 0 }}>Gestão inteligente para o seu salão</p>
                 </div>
 
                 {erro && (
                     <div style={{
                         background: "#fef2f2",
-                        color: "var(--danger)",
+                        color: "var(--cor-perigo)",
                         padding: "1rem",
-                        borderRadius: "var(--radius-md)",
+                        borderRadius: "var(--borda-raio-md)",
                         marginBottom: "1.5rem",
                         fontSize: "0.9rem",
                         border: "1px solid #fca5a5"
@@ -90,7 +90,7 @@ export default function Login() {
                     <div className="form-group" style={{ marginBottom: "1.5rem" }}>
                         <label>E-mail</label>
                         <div style={{ position: "relative" }}>
-                            <Mail size={20} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                            <Mail size={20} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--texto-secundario)" }} />
                             <input
                                 type="email"
                                 className="input-field"
@@ -105,7 +105,7 @@ export default function Login() {
                     <div className="form-group" style={{ marginBottom: "2rem" }}>
                         <label>Senha</label>
                         <div style={{ position: "relative" }}>
-                            <Lock size={20} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--text-muted)" }} />
+                            <Lock size={20} style={{ position: "absolute", left: "12px", top: "12px", color: "var(--texto-secundario)" }} />
                             <input
                                 type="password"
                                 className="input-field"
@@ -116,7 +116,7 @@ export default function Login() {
                             />
                         </div>
                         <div style={{ textAlign: "right", marginTop: "0.5rem" }}>
-                            <Link to="/forgot-password" style={{ color: "var(--primary)", fontSize: "0.85rem", textDecoration: "none" }}>
+                            <Link to="/forgot-password" style={{ color: "var(--cor-primaria)", fontSize: "0.85rem", textDecoration: "none" }}>
                                 Esqueci minha senha
                             </Link>
                         </div>
@@ -133,9 +133,9 @@ export default function Login() {
                     </button>
                 </form>
 
-                <div style={{ marginTop: "1.5rem", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                <div style={{ marginTop: "1.5rem", color: "var(--texto-secundario)", fontSize: "0.9rem" }}>
                     Não tem uma conta?{" "}
-                    <Link to="/cadastro" style={{ color: "var(--primary)", fontWeight: "600", textDecoration: "none" }}>
+                    <Link to="/cadastro" style={{ color: "var(--cor-primaria)", fontWeight: "600", textDecoration: "none" }}>
                         Cadastre-se
                     </Link>
                 </div>

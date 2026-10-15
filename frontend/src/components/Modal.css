@@ -14,9 +14,9 @@
 }
 
 .modal-content {
-  background-color: var(--bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-modal);
+  background-color: var(--fundo-superficie);
+  border-radius: var(--borda-raio-lg);
+  box-shadow: var(--sombra-modal);
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
@@ -32,7 +32,7 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .modal-header h2 {
@@ -41,8 +41,8 @@
 }
 
 .modal-close-btn {
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
+  color: var(--texto-secundario);
+  border-radius: var(--borda-raio-sm);
   padding: 0.25rem;
   display: flex;
   align-items: center;
@@ -50,8 +50,8 @@
 }
 
 .modal-close-btn:hover {
-  background-color: var(--bg-app);
-  color: var(--danger);
+  background-color: var(--fundo-app);
+  color: var(--cor-perigo);
 }
 
 @keyframes fadeIn {

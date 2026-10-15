@@ -60,7 +60,7 @@ export default function Pagamentos() {
 
 
             <div style={{ position: 'relative', marginBottom: '1.5rem', maxWidth: '400px' }}>
-                <Search size={20} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-muted)' }} />
+                <Search size={20} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--texto-secundario)' }} />
                 <input
                     className="input-field"
                     style={{ paddingLeft: '40px' }}
@@ -127,7 +127,7 @@ export default function Pagamentos() {
                         ))}
                         {pagamentosFiltrados.length === 0 && (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--texto-secundario)' }}>
                                     Nenhum pagamento encontrado.
                                 </td>
                             </tr>

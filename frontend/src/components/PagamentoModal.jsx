@@ -21,7 +21,7 @@ export default function PagamentoModal({ agendamento, valor, onClose, onConfirma
                 </div>
 
                 <div className="modal-body">
-                    <p style={{ textAlign: 'center', marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
+                    <p style={{ textAlign: 'center', marginBottom: '1.5rem', color: 'var(--texto-secundario)' }}>
                         Selecione a forma de pagamento para fechar a conta de <strong>R$ {Number(valor).toFixed(2).replace('.', ',')}</strong>.
                     </p>
 
@@ -36,8 +36,8 @@ export default function PagamentoModal({ agendamento, valor, onClose, onConfirma
                                     justifyContent: 'space-between',
                                     padding: '1rem', 
                                     fontSize: '1.1rem',
-                                    background: 'var(--bg-surface)',
-                                    border: '1px solid var(--border-color)',
+                                    background: 'var(--fundo-superficie)',
+                                    border: '1px solid var(--cor-borda)',
                                     textAlign: 'left'
                                 }}
                                 onClick={() => onConfirmarPagamento(metodo.nome)}
@@ -45,7 +45,7 @@ export default function PagamentoModal({ agendamento, valor, onClose, onConfirma
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                     {metodo.icone} {metodo.nome}
                                 </span>
-                                <span style={{ color: 'var(--text-muted)' }}>&gt;</span>
+                                <span style={{ color: 'var(--texto-secundario)' }}>&gt;</span>
                             </button>
                         ))}
                     </div>

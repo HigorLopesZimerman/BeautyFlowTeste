@@ -64,10 +64,10 @@ function ResetPassword() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "var(--background)", padding: "1rem" }}>
                 <div style={{ backgroundColor: "var(--surface)", padding: "2.5rem", borderRadius: "1rem", maxWidth: "400px", textAlign: "center" }}>
                     <h2 style={{ fontSize: "1.5rem", color: "var(--text)", marginBottom: "1rem" }}>Link Inválido</h2>
-                    <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
+                    <p style={{ color: "var(--texto-secundario)", marginBottom: "2rem" }}>
                         Parece que o link que você acessou está quebrado ou incompleto.
                     </p>
-                    <Link to="/forgot-password" style={{ display: "inline-block", padding: "0.75rem 1.5rem", backgroundColor: "var(--primary)", color: "white", borderRadius: "0.5rem", textDecoration: "none", fontWeight: "600" }}>
+                    <Link to="/forgot-password" style={{ display: "inline-block", padding: "0.75rem 1.5rem", backgroundColor: "var(--cor-primaria)", color: "white", borderRadius: "0.5rem", textDecoration: "none", fontWeight: "600" }}>
                         Solicitar novo link
                     </Link>
                 </div>
@@ -90,14 +90,14 @@ function ResetPassword() {
                 borderRadius: "1rem",
                 width: "100%",
                 maxWidth: "400px",
-                boxShadow: "var(--shadow-lg)",
+                boxShadow: "var(--sombra-lg)",
                 border: "1px solid var(--border)",
                 textAlign: "center"
             }}>
                 <h2 style={{ fontSize: "1.8rem", marginBottom: "0.5rem", color: "var(--text)" }}>
                     Criar Nova Senha
                 </h2>
-                <p style={{ color: "var(--text-muted)", marginBottom: "2rem", fontSize: "0.95rem" }}>
+                <p style={{ color: "var(--texto-secundario)", marginBottom: "2rem", fontSize: "0.95rem" }}>
                     Digite sua nova senha abaixo. Use algo seguro que você vai lembrar!
                 </p>
 
@@ -167,7 +167,7 @@ function ResetPassword() {
                             padding: "0.875rem",
                             borderRadius: "0.5rem",
                             border: "none",
-                            backgroundColor: "var(--primary)",
+                            backgroundColor: "var(--cor-primaria)",
                             color: "white",
                             fontWeight: "600",
                             fontSize: "1rem",

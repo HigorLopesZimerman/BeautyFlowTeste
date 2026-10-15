@@ -23,7 +23,7 @@ export default function AgendamentoActionModal({ agendamento, onClose, onStatusC
                         <User size={24} className="text-primary" /> {agendamento.cliente}
                     </div>
                     {agendamento.telefone_cliente && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-muted)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--texto-secundario)' }}>
                             <Phone size={18} /> {agendamento.telefone_cliente}
                         </div>
                     )}
@@ -34,7 +34,7 @@ export default function AgendamentoActionModal({ agendamento, onClose, onStatusC
                         <Scissors size={18} /> {agendamento.servico}
                     </div>
                     {agendamento.cliente_nota && (
-                        <div style={{ background: 'var(--bg-app)', padding: '10px', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ background: 'var(--fundo-app)', padding: '10px', borderRadius: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <FileText size={16} /> {agendamento.cliente_nota}
                         </div>
                     )}

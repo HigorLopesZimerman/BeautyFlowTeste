@@ -22,11 +22,11 @@ export default function ComandaModal({ agendamento, onClose, onFecharComanda }) 
                 </div>
 
                 <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 'bold', borderBottom: '1px solid var(--cor-borda)', paddingBottom: '1rem' }}>
                         <User size={24} className="text-primary" /> {agendamento.cliente}
                     </div>
 
-                    <div style={{ background: 'var(--bg-app)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
+                    <div style={{ background: 'var(--fundo-app)', padding: '1rem', borderRadius: 'var(--borda-raio-md)' }}>
                         <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>Item da Comanda:</p>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -47,12 +47,12 @@ export default function ComandaModal({ agendamento, onClose, onFecharComanda }) 
                 </div>
 
                 <div className="modal-footer" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', alignItems: 'center' }}>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary)' }}>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--cor-primaria)' }}>
                         Total: {formatCurrency(Number(valorEditado))}
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button className="btn" onClick={onClose}>Manter aberta</button>
-                        <button className="btn btn-primary" onClick={handleFechar} style={{ background: 'var(--success)', borderColor: 'var(--success)' }}>
+                        <button className="btn btn-primary" onClick={handleFechar} style={{ background: 'var(--cor-sucesso)', borderColor: 'var(--cor-sucesso)' }}>
                             Fechar comanda
                         </button>
                     </div>

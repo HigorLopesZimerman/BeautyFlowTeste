@@ -117,7 +117,7 @@ export default function Agendamentos() {
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ position: 'relative', flex: '1', minWidth: '250px', maxWidth: '400px' }}>
-                    <Search size={20} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-muted)' }} />
+                    <Search size={20} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--texto-secundario)' }} />
                     <input
                         className="input-field"
                         style={{ paddingLeft: '40px' }}
@@ -219,7 +219,7 @@ export default function Agendamentos() {
                         ))}
                         {agendamentosFiltrados.length === 0 && (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--texto-secundario)' }}>
                                     Nenhum agendamento encontrado.
                                 </td>
                             </tr>
@@ -250,12 +250,12 @@ export default function Agendamentos() {
                             ))}
                         </select>
                         {historicoCliente && historicoCliente.tem_historico && (
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--texto-secundario)', marginTop: '4px' }}>
                                 🕒 Última visita: {historicoCliente.data_ultima_visita.split('-').reverse().join('/')} ({historicoCliente.servico_ultima_visita})
                             </div>
                         )}
                         {historicoCliente && !historicoCliente.tem_historico && clienteId && (
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--texto-secundario)', marginTop: '4px' }}>
                                 ⭐ Primeira visita!
                             </div>
                         )}
@@ -322,7 +322,7 @@ export default function Agendamentos() {
                                 value={horaFim}
                                 onChange={(e) => {}}
                                 disabled
-                                style={{ background: 'var(--bg-app)', color: 'var(--text-muted)' }}
+                                style={{ background: 'var(--fundo-app)', color: 'var(--texto-secundario)' }}
                             />
                         </div>
                     </div>

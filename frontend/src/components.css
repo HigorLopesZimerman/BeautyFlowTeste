@@ -7,47 +7,47 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--borda-raio-md);
   font-weight: 500;
   transition: all 0.2s;
 }
 
 .btn-primary {
-  background-color: var(--primary);
+  background-color: var(--cor-primaria);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
+  background-color: var(--cor-primaria-hover);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--sombra-md);
 }
 
 .btn-danger {
-  background-color: var(--danger);
+  background-color: var(--cor-perigo);
   color: white;
 }
 
 .btn-danger:hover {
   background-color: #dc2626;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--sombra-sm);
 }
 
 /* Inputs */
 .input-field {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-surface);
-  color: var(--text-main);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--borda-raio-md);
+  background-color: var(--fundo-superficie);
+  color: var(--texto-principal);
   transition: all 0.2s;
   outline: none;
 }
 
 .input-field:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
 }
 
 /* Formulário Container */
@@ -60,16 +60,16 @@
 
 .form-group label {
   font-weight: 500;
-  color: var(--text-main);
+  color: var(--texto-principal);
 }
 
 /* Tabelas */
 .table-container {
   width: 100%;
   overflow-x: auto;
-  background: var(--bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  background: var(--fundo-superficie);
+  border-radius: var(--borda-raio-lg);
+  box-shadow: var(--sombra-sm);
 }
 
 .data-table {
@@ -78,18 +78,18 @@
 }
 
 .data-table th {
-  background-color: var(--bg-app);
-  color: var(--text-muted);
+  background-color: var(--fundo-app);
+  color: var(--texto-secundario);
   font-weight: 600;
   text-align: left;
   padding: 1rem;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--cor-borda);
 }
 
 .data-table td {
   padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-main);
+  border-bottom: 1px solid var(--cor-borda);
+  color: var(--texto-principal);
   vertical-align: middle;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .data-table tr:hover {
-  background-color: var(--bg-app);
+  background-color: var(--fundo-app);
 }
 
 .actions-cell {
@@ -108,17 +108,17 @@
 
 .icon-btn {
   padding: 0.5rem;
-  border-radius: var(--radius-md);
-  color: var(--text-muted);
+  border-radius: var(--borda-raio-md);
+  color: var(--texto-secundario);
 }
 
 .icon-btn:hover {
-  background-color: var(--bg-app);
-  color: var(--primary);
+  background-color: var(--fundo-app);
+  color: var(--cor-primaria);
 }
 
 .icon-btn.danger:hover {
-  color: var(--danger);
+  color: var(--cor-perigo);
 }
 
 /* Status Select - indicadores visuais por cor */
@@ -127,48 +127,48 @@
   font-size: 0.85rem;
   font-weight: 500;
   width: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  border-left: 4px solid var(--border-color);
-  background-color: var(--bg-surface);
-  color: var(--text-main);
+  border-radius: var(--borda-raio-md);
+  border: 1px solid var(--cor-borda);
+  border-left: 4px solid var(--cor-borda);
+  background-color: var(--fundo-superficie);
+  color: var(--texto-principal);
   cursor: pointer;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .status-select:focus {
-  box-shadow: 0 0 0 3px var(--primary-light);
+  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
 }
 
 /* Agendamento statuses */
 .status-select.status-agendado {
-  border-left-color: var(--warning);
-  background-color: var(--warning-bg);
+  border-left-color: var(--cor-alerta);
+  background-color: var(--cor-alerta-fundo);
 }
 
 .status-select.status-confirmado {
-  border-left-color: var(--primary);
-  background-color: var(--primary-light);
+  border-left-color: var(--cor-primaria);
+  background-color: var(--cor-primaria-clara);
 }
 
 .status-select.status-concluido {
-  border-left-color: var(--success);
-  background-color: var(--success-bg);
+  border-left-color: var(--cor-sucesso);
+  background-color: var(--cor-sucesso-fundo);
 }
 
 .status-select.status-cancelado {
-  border-left-color: var(--danger);
-  background-color: var(--danger-bg);
+  border-left-color: var(--cor-perigo);
+  background-color: var(--cor-perigo-fundo);
 }
 
 /* Pagamento statuses */
 .status-select.status-pendente {
-  border-left-color: var(--warning);
-  background-color: var(--warning-bg);
+  border-left-color: var(--cor-alerta);
+  background-color: var(--cor-alerta-fundo);
 }
 
 .status-select.status-pago {
-  border-left-color: var(--success);
-  background-color: var(--success-bg);
+  border-left-color: var(--cor-sucesso);
+  background-color: var(--cor-sucesso-fundo);
 }

@@ -29,7 +29,7 @@ export default function Relatorios() {
         return (
             <Layout>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                    <h2 style={{ color: 'var(--text-muted)' }}>Carregando dados de relatórios...</h2>
+                    <h2 style={{ color: 'var(--texto-secundario)' }}>Carregando dados de relatórios...</h2>
                 </div>
             </Layout>
         );
@@ -42,12 +42,12 @@ export default function Relatorios() {
             </div>
 
             <div style={{ 
-                background: 'var(--bg-surface)', 
+                background: 'var(--fundo-superficie)', 
                 padding: '1.5rem', 
-                borderRadius: 'var(--radius-lg)', 
-                boxShadow: 'var(--shadow-md)',
+                borderRadius: 'var(--borda-raio-lg)', 
+                boxShadow: 'var(--sombra-md)',
                 marginBottom: '2.5rem',
-                border: '1px solid var(--border-color)'
+                border: '1px solid var(--cor-borda)'
             }}>
                 <h3 style={{ margin: '0 0 1rem 0' }}>Filtrar Período</h3>
                 <ErrorAlert message={erroAPI} />
@@ -84,7 +84,7 @@ export default function Relatorios() {
                 </div>
             </div>
 
-            <h2 style={{ marginBottom: '1.5rem', color: 'var(--text-main)' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: 'var(--texto-principal)' }}>
                 Visão Geral {inicio && fim ? "(Período Filtrado)" : "(Todo o Período)"}
             </h2>
             <div style={{ 
