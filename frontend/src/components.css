@@ -141,7 +141,7 @@
   box-shadow: 0 0 0 3px var(--cor-primaria-clara);
 }
 
-/* Agendamento statuses */
+/* Agendamento status */
 .status-select.status-agendado {
   border-left-color: var(--cor-alerta);
   background-color: var(--cor-alerta-fundo);
@@ -162,7 +162,7 @@
   background-color: var(--cor-perigo-fundo);
 }
 
-/* Pagamento statuses */
+/* Pagamento status */
 .status-select.status-pendente {
   border-left-color: var(--cor-alerta);
   background-color: var(--cor-alerta-fundo);
