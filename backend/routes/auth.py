@@ -136,24 +136,20 @@ def forgot_password():
     conexao.close()
     
     if not usuario:
-        # Por segurança, mesmo se não existir não avisamos que não existe (previne enumeração)
         return jsonify({"sucesso": True, "mensagem": "Se o e-mail existir, um link de recuperação será gerado."}), 200
         
-    # Gerar token válido por 15 minutos
     reset_token = jwt.encode({
         "usuario_id": usuario["id"],
         "purpose": "password_reset",
         "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
     }, SECRET_KEY, algorithm="HS256")
     
-    # Enviar o e-mail real usando SMTP do Gmail
     try:
         import smtplib
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
 
-        # Como a aplicação está na Vercel e o backend no ngrok/local, precisamos de uma URL dinâmica
-        # Por enquanto usaremos a URL da Vercel ou localhost, dependendo do header origin
+        
         origin = request.headers.get("Origin", "https://beautyflow.vercel.app")
         reset_link = f"{origin}/reset-password?token={reset_token}"
         

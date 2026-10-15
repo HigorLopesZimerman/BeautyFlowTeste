@@ -139,7 +139,7 @@ def excluir_cliente(usuario_id, id):
 def clientes_ausentes(usuario_id):
     conexao = conectar()
     
-    # Busca clientes cujo último agendamento foi há mais de 30 dias
+    #clientes ausentes há mais de 30 dias
     clientes = conexao.execute("""
         SELECT c.id, c.nome, c.telefone, MAX(a.data) as ultima_visita
         FROM clientes c
