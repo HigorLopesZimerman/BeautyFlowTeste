@@ -1,4 +1,3 @@
-
 /* --- Componentes Globais --- */
 
 /* Botões */
@@ -17,6 +16,7 @@
   background-color: var(--primary);
   color: white;
 }
+
 .btn-primary:hover {
   background-color: var(--primary-hover);
   transform: translateY(-1px);
@@ -27,6 +27,7 @@
   background-color: var(--danger);
   color: white;
 }
+
 .btn-danger:hover {
   background-color: #dc2626;
   box-shadow: var(--shadow-sm);
@@ -43,6 +44,7 @@
   transition: all 0.2s;
   outline: none;
 }
+
 .input-field:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-light);
@@ -55,6 +57,7 @@
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
+
 .form-group label {
   font-weight: 500;
   color: var(--text-main);
@@ -108,10 +111,12 @@
   border-radius: var(--radius-md);
   color: var(--text-muted);
 }
+
 .icon-btn:hover {
   background-color: var(--bg-app);
   color: var(--primary);
 }
+
 .icon-btn.danger:hover {
   color: var(--danger);
 }
@@ -131,6 +136,7 @@
   outline: none;
   transition: all 0.2s ease;
 }
+
 .status-select:focus {
   box-shadow: 0 0 0 3px var(--primary-light);
 }
@@ -140,14 +146,17 @@
   border-left-color: var(--warning);
   background-color: var(--warning-bg);
 }
+
 .status-select.status-confirmado {
   border-left-color: var(--primary);
   background-color: var(--primary-light);
 }
+
 .status-select.status-concluido {
   border-left-color: var(--success);
   background-color: var(--success-bg);
 }
+
 .status-select.status-cancelado {
   border-left-color: var(--danger);
   background-color: var(--danger-bg);
@@ -158,6 +167,7 @@
   border-left-color: var(--warning);
   background-color: var(--warning-bg);
 }
+
 .status-select.status-pago {
   border-left-color: var(--success);
   background-color: var(--success-bg);
